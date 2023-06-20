@@ -3,6 +3,7 @@ import React from "react";
 import Home from "../components/Home";
 import AuthContainer from "../hoc/AuthContainer";
 import Auth from "../components/Auth";
+import AppContainer from "../hoc/AppContainer";
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,14 @@ export const router = createBrowserRouter([
       <AuthContainer>
         <Auth authMethod="register" />
       </AuthContainer>
+    ),
+  },
+  {
+    path: "/home",
+    element: (
+      <AppContainer>
+        <Home />
+      </AppContainer>
     ),
   },
 ]);
