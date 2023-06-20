@@ -1,11 +1,56 @@
-import React from 'react'
+import React from "react";
 
-function Buttons() {
-  return (
-    <div>
-      
-    </div>
-  )
+type Props = {
+  type?: ButtonType;
+  title: string;
+  onClick: () => void;
+  theme: string;
+};
+
+type ButtonType = "submit" | "button";
+
+function Button(props: Props) {
+  switch (props.theme) {
+    case "dark":
+      return <DarkButton {...props} />;
+    case "light":
+      return <LightButton {...props} />;
+    default:
+      return null;
+  }
 }
 
-export default Buttons
+function DarkButton(props: Props) {
+  return (
+    <>
+      <button
+        type={props.type}
+        className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+        onClick={(e) => {
+          e.preventDefault();
+          props.onClick();
+        }}
+      >
+        {props.title}
+      </button>
+    </>
+  );
+}
+
+function LightButton(props: Props) {
+  return (
+    <>
+      <button
+        className="border bg-[#F8FAFC] text-[#030711] hover: border-slate-50 px-4 py-2 rounded-md "
+        onClick={(e) => {
+          e.preventDefault();
+          props.onClick();
+        }}
+      >
+        {props.title}
+      </button>
+    </>
+  );
+}
+
+export default Button;

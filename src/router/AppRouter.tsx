@@ -1,6 +1,8 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React from "react";
 import Home from "../components/Home";
+import AuthContainer from "../hoc/AuthContainer";
+import Auth from "../components/Auth";
 
 export const router = createBrowserRouter([
   {
@@ -13,14 +15,22 @@ export const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <div>This is a Login page.</div>,
+    element: (
+      <AuthContainer>
+        <Auth authMethod="login" />
+      </AuthContainer>
+    ),
   },
   {
     path: "/register",
-    element: <div>This is a Register page.</div>,
+    element: (
+      <AuthContainer>
+        <Auth authMethod="register" />
+      </AuthContainer>
+    ),
   },
 ]);
 
 export default function AppRouter() {
-  return <RouterProvider fallbackElement={<div>Hello</div>} router={router} />;
+  return <RouterProvider router={router} />;
 }
