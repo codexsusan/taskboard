@@ -3,7 +3,7 @@ import React from "react";
 type Props = {
   type?: ButtonType;
   title: string;
-  onClick: () => void;
+  onClick?: () => void;
   theme: string;
 };
 
@@ -24,11 +24,11 @@ function DarkButton(props: Props) {
   return (
     <>
       <button
-        type={props.type}
+        type="submit"
         className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
         onClick={(e) => {
           e.preventDefault();
-          props.onClick();
+          props.onClick!();
         }}
       >
         {props.title}
@@ -41,10 +41,11 @@ function LightButton(props: Props) {
   return (
     <>
       <button
+        type={props.type}
         className="border bg-[#F8FAFC] text-[#030711] hover: border-slate-50 px-4 py-2 rounded-md "
         onClick={(e) => {
           e.preventDefault();
-          props.onClick();
+          props.onClick!();
         }}
       >
         {props.title}

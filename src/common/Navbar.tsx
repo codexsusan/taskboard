@@ -2,7 +2,7 @@ import React from "react";
 import Button from "./Buttons";
 import { useNavigate } from "react-router-dom";
 
-function Navbar() {
+function Navbar(props: { source: string }) {
   const navigate = useNavigate();
   return (
     <div className="p-6 bg-[#030711] text-white flex justify-between flex-1 items-center">

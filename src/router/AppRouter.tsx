@@ -1,9 +1,10 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React from "react";
-import Home from "../components/Home";
+import Home from "../components/Boards";
 import AuthContainer from "../hoc/AuthContainer";
 import Auth from "../components/Auth";
 import AppContainer from "../hoc/AppContainer";
+import Board from "../components/Boards";
 
 export const router = createBrowserRouter([
   {
@@ -31,13 +32,17 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/home",
+    path: "/board",
     element: (
       <AppContainer>
-        <Home />
+        <Board />
       </AppContainer>
     ),
   },
+  {
+    path: "*",
+    element: <div>Not Found</div>,
+  }
 ]);
 
 export default function AppRouter() {

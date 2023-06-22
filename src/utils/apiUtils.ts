@@ -1,7 +1,10 @@
 
 type methodType = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
-const base_url = "http://localhost:3001";
+const base_url = "https://taskboard-backend.onrender.com";
+// const base_url = "http://localhost:3001";
+
+
 
 export const request = async (endpoint: string, method: methodType = "GET", data: any = {}) => {
     let url: string;
@@ -13,14 +16,14 @@ export const request = async (endpoint: string, method: methodType = "GET", data
     }
     // Token Authentication
     const token = localStorage.getItem("token");
-    const auth = token ? `Token ${token}` : "";
+    const auth = token ? token : "";
 
     const response = await fetch(
         url, {
         method,
         headers: {
             "Content-Type": "application/json",
-            Authorization: auth,
+            "auth-token": auth,
         },
         body: method !== "GET" ? JSON.stringify(data) : undefined,
     });

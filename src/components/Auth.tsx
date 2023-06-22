@@ -1,11 +1,10 @@
 import React, { useReducer } from "react";
 import InputField from "../common/InputField";
-import Button from "../common/Buttons";
 
 import { useNavigate } from "react-router-dom";
 
 import { User, authType } from "../types/UserTypes";
-import { createUser } from "../utils/authUtils";
+import { checkUser, createUser } from "../utils/authUtils";
 
 type ChangeName = { type: "CHANGE_NAME"; payload: string };
 
@@ -58,7 +57,6 @@ function Auth(props: { authMethod: authType }) {
 
   const changeEmail = (value: string) => {
     dispatch({ type: "CHANGE_EMAIL", payload: value });
-    console.log(state.email);
   };
 
   const changePassword = (value: string) => {
@@ -98,9 +96,27 @@ function Login(props: {
   changeEmailCB: (value: string) => void;
   changePasswordCB: (value: string) => void;
 }) {
-  const handleLogin = () => {};
+  const navigate = useNavigate();
+  const handleLogin = async (user: User) => {
+    try {
+      const userData = await checkUser(user);
+      if (userData.success) {
+        navigate("/home");
+        localStorage.setItem("token", userData.authToken);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <form onSubmit={handleLogin} className="w-1/4 flex flex-col gap-y-3">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleLogin(props.state);
+        navigate("/home");
+      }}
+      className="w-1/4 flex flex-col gap-y-3"
+    >
       <InputField
         placeholder="johndoe@gmail.com"
         label="Email"
@@ -117,14 +133,12 @@ function Login(props: {
         value={props.state.password}
         onValueChange={props.changePasswordCB}
       />
-      <Button
-        title="Login"
-        theme="dark"
+      <button
         type="submit"
-        onClick={() => {
-          //   handleLogin();
-        }}
-      />
+        className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+      >
+        Login
+      </button>
     </form>
   );
 }
@@ -141,7 +155,6 @@ function Signup(props: {
   const handleSignUp = async (user: User) => {
     try {
       const userData = await createUser(user);
-      console.log(userData);
       if (userData.success) {
         navigate("/home");
         localStorage.setItem("token", userData.authToken);
@@ -151,7 +164,12 @@ function Signup(props: {
     }
   };
   return (
-    <form className="w-1/4 flex flex-col gap-y-3">
+    <form
+      onSubmit={() => {
+        handleSignUp(props.state);
+      }}
+      className="w-1/4 flex flex-col gap-y-3"
+    >
       <InputField
         placeholder="John Doe"
         label="Full Name"
@@ -184,14 +202,12 @@ function Signup(props: {
         value={props.state.confirmPassword}
         required={true}
       />
-      <Button
-        title="Register"
-        theme="dark"
-        onClick={() => {
-          handleSignUp(props.state);
-          //   handleLogin();
-        }}
-      />
+      <button
+        type="submit"
+        className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+      >
+        Register
+      </button>
     </form>
   );
 }
