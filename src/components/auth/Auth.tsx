@@ -1,10 +1,10 @@
 import React, { useReducer } from "react";
-import InputField from "../common/InputField";
+import InputField from "../../common/InputField";
 
 import { useNavigate } from "react-router-dom";
 
-import { User, authType } from "../types/UserTypes";
-import { checkUser, createUser } from "../utils/authUtils";
+import { User, authType } from "../../types/UserTypes";
+import { checkUser, createUser } from "../../utils/authUtils";
 
 type ChangeName = { type: "CHANGE_NAME"; payload: string };
 

@@ -19,3 +19,8 @@ export const listBoard = async () => {
     const response = request("/board/list", "GET");
     return response;
 }
+
+export const getBoard = async (id: string) => {
+    const response = request(`/board/list/${id}`, "GET");
+    return response;
+}

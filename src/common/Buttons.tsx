@@ -42,7 +42,7 @@ function LightButton(props: Props) {
     <>
       <button
         type={props.type}
-        className="border bg-[#F8FAFC] text-[#030711] hover: border-slate-50 px-4 py-2 rounded-md "
+        className="bg-slate-100 text-[#030711] hover:bg-slate-200 px-4 py-2 rounded-md"
         onClick={(e) => {
           e.preventDefault();
           props.onClick!();

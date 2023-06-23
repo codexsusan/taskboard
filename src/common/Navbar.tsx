@@ -9,22 +9,25 @@ function Navbar(props: { source: string }) {
       <div>
         <h1 className="text-xl font-semibold">TASKBOARD</h1>
       </div>
-      <div className="flex items-center gap-x-8">
-        <div>
-          <Button
-            title="Register"
-            theme="light"
-            onClick={() => navigate("/register")}
-          />
+
+      {props.source === "authcontainer" && (
+        <div className="flex items-center gap-x-8">
+          <div>
+            <Button
+              title="Register"
+              theme="light"
+              onClick={() => navigate("/register")}
+            />
+          </div>
+          <div>
+            <Button
+              title="Login"
+              theme="dark"
+              onClick={() => navigate("/login")}
+            />
+          </div>
         </div>
-        <div>
-          <Button
-            title="Login"
-            theme="dark"
-            onClick={() => navigate("/login")}
-          />
-        </div>
-      </div>
+      )}
     </div>
   );
 }

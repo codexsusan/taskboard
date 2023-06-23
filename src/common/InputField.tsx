@@ -10,7 +10,7 @@ type Props = {
 function InputField(props: Props) {
   return (
     <div>
-      <label htmlFor={props.label} className="block mb-2 ">
+      <label htmlFor={props.label} className="block mb-1">
         {props.label}
       </label>
       <input

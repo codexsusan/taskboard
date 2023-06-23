@@ -1,10 +1,11 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React from "react";
-import Home from "../components/Boards";
+import Home from "../components/board/Boards";
 import AuthContainer from "../hoc/AuthContainer";
-import Auth from "../components/Auth";
+import Auth from "../components/auth/Auth";
 import AppContainer from "../hoc/AppContainer";
-import Board from "../components/Boards";
+import Board from "../components/board/Boards";
+import SingleBoard from "../components/stage/Stage";
 
 export const router = createBrowserRouter([
   {
@@ -40,9 +41,17 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: "/board/:id",
+    element: (
+      <AppContainer>
+        <SingleBoard />
+      </AppContainer>
+    ),
+  },
+  {
     path: "*",
     element: <div>Not Found</div>,
-  }
+  },
 ]);
 
 export default function AppRouter() {
