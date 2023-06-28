@@ -3,61 +3,25 @@ import Button from "../../common/Buttons";
 import InputField from "../../common/InputField";
 import Modal from "../../common/Modal";
 import { listBoard, Board, createBoard } from "../../utils/boardUtils";
-import { useNavigate } from "react-router-dom";
-
-type BoardState = {
-  boards: Board[];
-  loading: boolean;
-  modalStatus: boolean;
-};
-
-type InitializeState = {
-  type: "INITIALIZE_STATE";
-  data: Board[];
-};
-
-type updateModalStatus = {
-  type: "UPDATE_MODAL_STATUS";
-  payload: boolean;
-};
-
-type addBoardAction = {
-  type: "ADD_BOARD";
-  payload: Board;
-};
-
-type ReducerAction = InitializeState | updateModalStatus | addBoardAction;
-
-const reducer = (state: BoardState, action: ReducerAction) => {
-  switch (action.type) {
-    case "INITIALIZE_STATE":
-      return {
-        ...state,
-        loading: false,
-        boards: [...action.data],
-      };
-    case "UPDATE_MODAL_STATUS":
-      return { ...state, modalStatus: action.payload };
-    case "ADD_BOARD":
-      return { ...state, boards: [...state.boards, action.payload] };
-    default:
-      return state;
-  }
-};
+import { BoardState, reducer } from "./reducer";
+import { BoardCard } from "./BoardComp";
 
 function Boards() {
   const [state, dispatch] = useReducer(reducer, {
     boards: [],
     loading: true,
     modalStatus: false,
+    newBoard: {
+      id: "",
+      title: "",
+      description: "",
+    },
   } as BoardState);
 
   const addBoardCB = (board: Board) => {
-    console.log(board);
     dispatch({ type: "ADD_BOARD", payload: board });
     createBoard(board)
       .then((res) => {
-        console.log(res);
         if (res.success) {
           closeModalCB();
         }
@@ -75,9 +39,19 @@ function Boards() {
     dispatch({ type: "UPDATE_MODAL_STATUS", payload: false });
   };
 
+  const updateNewBoardTitleCB = (value: string) => {
+    dispatch({ type: "UPDATE_NEW_BOARD_TITLE", payload: value });
+  };
+  const updateNewBoardDescriptionCB = (value: string) => {
+    dispatch({ type: "UPDATE_NEW_BOARD_DESCRIPTION", payload: value });
+  };
+
   useEffect(() => {
     const fetchBoardData = async () => {
       await listBoard().then((res) => {
+        if (res.error) {
+          return console.log(res.error);
+        }
         dispatch({ type: "INITIALIZE_STATE", data: res.data });
       });
     };
@@ -109,6 +83,7 @@ function Boards() {
             No Boards Found
           </div>
         )}
+
         {!state.loading &&
           state.boards.length > 0 &&
           state.boards.map((board) => {
@@ -123,117 +98,26 @@ function Boards() {
           })}
       </div>
       <Modal open={state.modalStatus} closeCB={() => closeModalCB()}>
-        <BoardBox closeCB={closeModalCB} addBoardCB={addBoardCB} />
+        <BoardBox
+          updateNewBoardTitleCB={updateNewBoardTitleCB}
+          updateNewBoardDescriptionCB={updateNewBoardDescriptionCB}
+          closeCB={closeModalCB}
+          addBoardCB={addBoardCB}
+          newBoard={state.newBoard}
+        />
       </Modal>
     </div>
   );
 }
 
-export function BoardCard(props: {
-  id: string;
-  title: string;
-  description: string;
-}) {
-  const navigate = useNavigate();
-
-  const navigateToBoard = () => {
-    navigate(`/board/${props.id}`, {
-      state: {
-        id: props.id,
-        title: props.title,
-        description: props.description,
-      },
-    });
-  };
-  return (
-    <div
-      onClick={navigateToBoard}
-      className="border cursor-pointer border-slate-200 w-72 py-6 px-4 rounded-lg flex flex-col gap-y-1 hover:bg-slate-50 hover:border-slate-300"
-    >
-      <div className="text-2xl font-medium text-neutral-600">{props.title}</div>
-      <div className="text-lg font-medium text-neutral-500">
-        {props.description}
-      </div>
-      <div className=" text-sm text-neutral-400">03/04/2023</div>
-    </div>
-  );
-}
-
-type updateTitle = {
-  type: "UPDATE_TITLE";
-  payload: string;
-};
-
-type updateDescription = {
-  type: "UPDATE_DESCRIPTION";
-  payload: string;
-};
-
-type clearFields = {
-  type: "CLEAR_FIELDS";
-};
-
-type newFieldAction = updateTitle | updateDescription | clearFields;
-
-const newFieldReducer = (state: Board, action: newFieldAction) => {
-  switch (action.type) {
-    case "UPDATE_TITLE":
-      return {
-        ...state,
-        title: action.payload,
-      };
-    case "UPDATE_DESCRIPTION":
-      return {
-        ...state,
-        description: action.payload,
-      };
-    case "CLEAR_FIELDS":
-      return {
-        ...state,
-        title: "",
-        description: "",
-      };
-
-    default:
-      return state;
-  }
-};
-
 export function BoardBox(props: {
   addBoardCB?: (board: Board) => void;
+  updateBoardCB?: (board: Board) => void;
   closeCB?: () => void;
-  boardData?: Board;
+  newBoard: Board;
+  updateNewBoardTitleCB?: (value: string) => void;
+  updateNewBoardDescriptionCB?: (value: string) => void;
 }) {
-  const initializer = () => {
-    if (props.boardData) {
-      return {
-        id: props.boardData.id,
-        title: props.boardData.title,
-        description: props.boardData.description,
-      };
-    } else {
-      return {
-        id: "",
-        title: "",
-        description: "",
-      };
-    }
-  };
-
-  const [state, dispatch] = useReducer(newFieldReducer, {
-    id: "",
-    title: "",
-    description: "",
-  }, initializer);
-
-  const changeTitleCB = (value: string) => {
-    dispatch({ type: "UPDATE_TITLE", payload: value });
-  };
-
-  const changeDescriptionCB = (value: string) => {
-    dispatch({ type: "UPDATE_DESCRIPTION", payload: value });
-  };
-
   return (
     <div className="w-full divide-y divide-gray-200">
       <h1 className="text-2xl text-gray-700 text-center my-2">Create Board</h1>
@@ -241,20 +125,25 @@ export function BoardBox(props: {
         className="py-4 flex flex-col gap-y-4"
         onSubmit={(e) => {
           e.preventDefault();
-          props.addBoardCB!(state);
+          if (props.addBoardCB) {
+            props.addBoardCB(props.newBoard);
+          }
+          if (props.updateBoardCB) {
+            props.updateBoardCB(props.newBoard);
+          }
         }}
       >
         <InputField
-          value={state.title}
-          onValueChange={changeTitleCB}
+          value={props.newBoard.title}
+          onValueChange={props.updateNewBoardTitleCB}
           label="Title"
           type="text"
         />
         <InputField
-          onValueChange={changeDescriptionCB}
+          onValueChange={props.updateNewBoardDescriptionCB}
           label="Description"
           type="text"
-          value={state.description}
+          value={props.newBoard.description}
         />
         <div className="flex items-center w-full justify-between">
           <Button theme="dark" title="Cancel" onClick={props.closeCB} />

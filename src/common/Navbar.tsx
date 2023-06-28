@@ -28,6 +28,18 @@ function Navbar(props: { source: string }) {
           </div>
         </div>
       )}
+      {props.source === "appcontainer" && (
+        <div>
+          <Button
+            title="Logout"
+            theme="dark"
+            onClick={() => {
+              navigate("/login");
+              localStorage.removeItem("token");
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

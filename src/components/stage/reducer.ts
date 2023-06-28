@@ -16,6 +16,12 @@ type deleteBoardModalAction = {
     payload: boolean;
 };
 
+type InitializeBoard = {
+    type: "INITIALIZE_BOARD";
+    payload: Board;
+    loadStatus: boolean
+}
+
 type DeleteBoard = {
     type: "DELETE_BOARD";
 }
@@ -40,12 +46,35 @@ type DeleteStageAction = {
     id: string;
 };
 
+type UpdateNewStageTitle = {
+    type: "UPDATE_NEW_STAGE_TITLE";
+    payload: string;
+}
+
+
+type UpdateNewStageDescription = {
+    type: "UPDATE_NEW_STAGE_DESCRIPTION";
+    payload: string;
+}
+
+type UpdateBoardTitle = {
+    type: "UPDATE_BOARD_TITLE";
+    payload: string;
+}
+
+type UpdateBoardDescription = {
+    type: "UPDATE_BOARD_DESCRIPTION";
+    payload: string;
+}
 
 export type State = {
     board: Board;
     stageModal: boolean;
     boardModal: boolean;
+    boardLoading: boolean;
+    stageLoading: boolean;
     stage: Stage[];
+    newStage: Stage;
     deleteBoardModal: boolean;
 };
 
@@ -57,10 +86,21 @@ type BoardActions =
     | InitializeStage
     | DeleteStageAction
     | UpdateBoardAction
-    | DeleteBoard;
+    | DeleteBoard
+    | InitializeBoard
+    | UpdateNewStageTitle
+    | UpdateNewStageDescription
+    | UpdateBoardTitle
+    | UpdateBoardDescription;
 
 export const reducer = (state: State, action: BoardActions) => {
     switch (action.type) {
+        case "INITIALIZE_BOARD":
+            return {
+                ...state,
+                board: action.payload,
+                boardLoading: action.loadStatus
+            }
         case "OPEN_BOARD_MODAL":
             return {
                 ...state,
@@ -124,6 +164,38 @@ export const reducer = (state: State, action: BoardActions) => {
                 ...state,
                 stage: state.stage.filter((stage) => stage.id !== action.id),
             };
+        case "UPDATE_NEW_STAGE_TITLE":
+            return {
+                ...state,
+                newStage: {
+                    ...state.newStage,
+                    title: action.payload,
+                }
+            }
+        case "UPDATE_NEW_STAGE_DESCRIPTION":
+            return {
+                ...state,
+                newStage: {
+                    ...state.newStage,
+                    description: action.payload,
+                }
+            }
+        case "UPDATE_BOARD_TITLE":
+            return {
+                ...state,
+                board: {
+                    ...state.board,
+                    title: action.payload,
+                }
+            }
+        case "UPDATE_BOARD_DESCRIPTION":
+            return {
+                ...state,
+                board: {
+                    ...state.board,
+                    description: action.payload,
+                }
+            }
         default:
             return state;
     }

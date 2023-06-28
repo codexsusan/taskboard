@@ -101,7 +101,7 @@ function Login(props: {
     try {
       const userData = await checkUser(user);
       if (userData.success) {
-        navigate("/home");
+        navigate("/");
         localStorage.setItem("token", userData.authToken);
       }
     } catch (error) {
@@ -113,7 +113,6 @@ function Login(props: {
       onSubmit={(e) => {
         e.preventDefault();
         handleLogin(props.state);
-        navigate("/home");
       }}
       className="w-1/4 flex flex-col gap-y-3"
     >

@@ -5,7 +5,8 @@ import AuthContainer from "../hoc/AuthContainer";
 import Auth from "../components/auth/Auth";
 import AppContainer from "../hoc/AppContainer";
 import Board from "../components/board/Boards";
-import SingleBoard from "../components/stage/Stage";
+import Stages from "../components/stage/Stage";
+import Errorpage from "../components/Errorpage";
 
 export const router = createBrowserRouter([
   {
@@ -41,16 +42,20 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/board/:id",
+    path: "/board/:boardId",
     element: (
       <AppContainer>
-        <SingleBoard />
+        <Stages />
       </AppContainer>
     ),
   },
   {
     path: "*",
-    element: <div>Not Found</div>,
+    element: (
+      <AuthContainer>
+        <Errorpage />
+      </AuthContainer>
+    ),
   },
 ]);
 
