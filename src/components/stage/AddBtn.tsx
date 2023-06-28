@@ -2,7 +2,10 @@ import React from "react";
 
 function AddBtn() {
   return (
-    <div className="bg-white flex justify-center mt-3 p-2 rounded">
+    <div
+      onClick={() => {}}
+      className="bg-white flex justify-center mt-3 p-2 rounded"
+    >
       <div>
         <svg
           xmlns="http://www.w3.org/2000/svg"

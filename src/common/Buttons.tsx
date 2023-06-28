@@ -5,6 +5,7 @@ type Props = {
   title: string;
   onClick?: () => void;
   theme: string;
+  customClass?: string;
 };
 
 type ButtonType = "submit" | "button";
@@ -15,6 +16,8 @@ function Button(props: Props) {
       return <DarkButton {...props} />;
     case "light":
       return <LightButton {...props} />;
+    case "white":
+      return <WhiteButton {...props} />;
     default:
       return null;
   }
@@ -25,7 +28,7 @@ function DarkButton(props: Props) {
     <>
       <button
         type="submit"
-        className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+        className={`border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md ${props.customClass}`}
         onClick={(e) => {
           e.preventDefault();
           props.onClick!();
@@ -42,7 +45,23 @@ function LightButton(props: Props) {
     <>
       <button
         type={props.type}
-        className="bg-slate-100 text-[#030711] hover:bg-slate-200 px-4 py-2.5 rounded-md"
+        className={`bg-slate-100 text-[#030711] hover:bg-slate-200 px-4 py-2.5 rounded-md ${props.customClass}`}
+        onClick={(e) => {
+          e.preventDefault();
+          props.onClick!();
+        }}
+      >
+        {props.title}
+      </button>
+    </>
+  );
+}
+function WhiteButton(props: Props) {
+  return (
+    <>
+      <button
+        type={props.type}
+        className={`bg-white text-[#030711] hover:bg-slate-50 px-4 py-2.5 rounded-md ${props.customClass}`}
         onClick={(e) => {
           e.preventDefault();
           props.onClick!();

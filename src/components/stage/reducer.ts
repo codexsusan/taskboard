@@ -66,11 +66,20 @@ type UpdateBoardDescription = {
     type: "UPDATE_BOARD_DESCRIPTION";
     payload: string;
 }
+type ClearFields = {
+    type: "CLEAR_FIELDS";
+}
+
+type CloseTaskModal = {
+    type: "CLOSE_TASK_MODAL";
+    payload: boolean;
+}
 
 export type State = {
     board: Board;
     stageModal: boolean;
     boardModal: boolean;
+    taskModal: boolean;
     boardLoading: boolean;
     stageLoading: boolean;
     stage: Stage[];
@@ -91,7 +100,10 @@ type BoardActions =
     | UpdateNewStageTitle
     | UpdateNewStageDescription
     | UpdateBoardTitle
-    | UpdateBoardDescription;
+    | UpdateBoardDescription
+    | ClearFields
+    | CloseTaskModal
+    ;
 
 export const reducer = (state: State, action: BoardActions) => {
     switch (action.type) {
@@ -194,6 +206,15 @@ export const reducer = (state: State, action: BoardActions) => {
                 board: {
                     ...state.board,
                     description: action.payload,
+                }
+            }
+        case "CLEAR_FIELDS":
+            return {
+                ...state,
+                newStage: {
+                    id: "",
+                    title: "",
+                    description: "",
                 }
             }
         default:

@@ -18,9 +18,10 @@ import {
 } from "../../utils/stageUtils";
 import { reducer, State } from "./reducer";
 import Divider from "../../common/Divider";
-import StageCard from "./StageCard";
 import { AddStage } from "./StageComp";
 import { DeleteModal, UpdateBoard } from "../board/BoardComp";
+import { StageCard } from "./StageCard";
+import { AddTaskModal } from "../task/TaskComp";
 
 function Stages() {
   const { boardId } = useParams();
@@ -42,6 +43,7 @@ function Stages() {
     },
     stageModal: false,
     boardModal: false,
+    taskModal: false,
     deleteBoardModal: false,
   } as State);
 
@@ -134,15 +136,21 @@ function Stages() {
   };
 
   const createStageCB = (stage: Stage) => {
-    dispatch({ type: "CREATE_STAGE", payload: stage });
-
     createStage(stage, boardId!)
       .then((res) => {
-        console.log(res);
+        dispatch({
+          type: "CREATE_STAGE",
+          payload: {
+            id: res.data.id,
+            title: stage.title,
+            description: stage.description,
+          },
+        });
       })
       .catch((err) => {
         console.log(err);
       });
+    dispatch({ type: "CLEAR_FIELDS" });
   };
 
   const deleteStageCB = (id: string) => {
@@ -155,6 +163,10 @@ function Stages() {
         console.log(err);
       });
   };
+
+  const closeTaskModalCB = ()=>{
+    dispatch({type:"CLOSE_TASK_MODAL",payload:false})
+  }
 
   return (
     <div className="px-8 h-3/4">
@@ -219,6 +231,7 @@ function Stages() {
         open={state.deleteBoardModal}
         closeCB={closeDeleteBoardCB}
       />
+      <AddTaskModal open={state.taskModal} closeCB={closeTaskModalCB} />
     </div>
   );
 }
