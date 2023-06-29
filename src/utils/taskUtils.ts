@@ -4,6 +4,7 @@ export type Task = {
     id: string;
     title: string;
     description: string;
+    priority: string;
 }
 
 export const getAllTask = async (stageId: Task['id']) => {
@@ -11,3 +12,12 @@ export const getAllTask = async (stageId: Task['id']) => {
     return response;
 }
 
+export const createTask = async (task: Task, stageId: Task['id']) => {
+    const response = await request(`/task/${stageId}/create`, "POST", {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        priority: task.priority
+    });
+    return response;
+}

@@ -7,7 +7,7 @@ import {
   getBoard,
   updateBoard,
 } from "../../utils/boardUtils";
-import IconButton from "../../common/IconButton";
+import { IconButton } from "../../common/IconButton";
 import { ShimmerUIButton } from "shimmer-ui-effect";
 
 import {
@@ -15,13 +15,13 @@ import {
   createStage,
   deleteStage,
   getAllStage,
+  updateStageTitle,
 } from "../../utils/stageUtils";
 import { reducer, State } from "./reducer";
 import Divider from "../../common/Divider";
 import { AddStage } from "./StageComp";
 import { DeleteModal, UpdateBoard } from "../board/BoardComp";
 import { StageCard } from "./StageCard";
-import { AddTaskModal } from "../task/TaskComp";
 
 function Stages() {
   const { boardId } = useParams();
@@ -43,7 +43,6 @@ function Stages() {
     },
     stageModal: false,
     boardModal: false,
-    taskModal: false,
     deleteBoardModal: false,
   } as State);
 
@@ -89,6 +88,7 @@ function Stages() {
   const updateBoardTitleCB = (value: string) => {
     dispatch({ type: "UPDATE_BOARD_TITLE", payload: value });
   };
+
   const updateBoardDescriptionCB = (value: string) => {
     dispatch({ type: "UPDATE_BOARD_DESCRIPTION", payload: value });
   };
@@ -153,6 +153,18 @@ function Stages() {
     dispatch({ type: "CLEAR_FIELDS" });
   };
 
+  const updateStageTitleCB = ( id: string,title: string) => {
+    dispatch({ type: "UPDATE_STAGE_TITLE", payload: title, id });
+    console.log(title);
+    updateStageTitle(id, title, boardId!)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const deleteStageCB = (id: string) => {
     dispatch({ type: "DELETE_STAGE", id });
     deleteStage(id, boardId!)
@@ -163,10 +175,6 @@ function Stages() {
         console.log(err);
       });
   };
-
-  const closeTaskModalCB = ()=>{
-    dispatch({type:"CLOSE_TASK_MODAL",payload:false})
-  }
 
   return (
     <div className="px-8 h-3/4">
@@ -203,6 +211,7 @@ function Stages() {
         {state.stage.map((stage) => {
           return (
             <StageCard
+              updateStageTitleCB={updateStageTitleCB}
               key={stage.id}
               stage={stage}
               deleteStageCB={deleteStageCB}
@@ -219,19 +228,19 @@ function Stages() {
         updateNewBoardDescriptionCB={updateBoardDescriptionCB}
       />
       <AddStage
-        createStageCB={createStageCB}
         open={state.stageModal}
+        closeCB={closeStageModalCB}
+        createStageCB={createStageCB}
         newStage={state.newStage}
         updateNewStageTitleCB={updateNewStageTitleCB}
         updateNewStageDescriptionCB={updateNewStageDescriptionCB}
-        closeCB={closeStageModalCB}
       />
       <DeleteModal
         deleteBoardCB={deleteBoardCB}
         open={state.deleteBoardModal}
         closeCB={closeDeleteBoardCB}
       />
-      <AddTaskModal open={state.taskModal} closeCB={closeTaskModalCB} />
+      {/* <AddTaskModal open={state.taskModal} closeCB={closeTaskModalCB} /> */}
     </div>
   );
 }

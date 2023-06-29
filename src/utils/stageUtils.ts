@@ -19,8 +19,12 @@ export const createStage = async (stage: Stage, boardId: Board['id']) => {
     return response;
 }
 
-
 export const deleteStage = async (id: string, boardId: Board['id']) => {
     const response = await request(`/stage/${boardId}/delete/${id}`, "DELETE");
+    return response;
+}
+
+export const updateStageTitle = async (id: string, title: string, boardId: Board['id']) => {
+    const response = await request(`/stage/${boardId}/update/${id}`, "PATCH", { title });
     return response;
 }

@@ -51,10 +51,15 @@ type UpdateNewStageTitle = {
     payload: string;
 }
 
-
 type UpdateNewStageDescription = {
     type: "UPDATE_NEW_STAGE_DESCRIPTION";
     payload: string;
+}
+
+type UpdateStageTitle = {
+    type: "UPDATE_STAGE_TITLE";
+    payload: string;
+    id: string
 }
 
 type UpdateBoardTitle = {
@@ -70,8 +75,8 @@ type ClearFields = {
     type: "CLEAR_FIELDS";
 }
 
-type CloseTaskModal = {
-    type: "CLOSE_TASK_MODAL";
+type SwitchTaskModal = {
+    type: "SWITCH_TASK_MODAL";
     payload: boolean;
 }
 
@@ -79,7 +84,6 @@ export type State = {
     board: Board;
     stageModal: boolean;
     boardModal: boolean;
-    taskModal: boolean;
     boardLoading: boolean;
     stageLoading: boolean;
     stage: Stage[];
@@ -87,12 +91,13 @@ export type State = {
     deleteBoardModal: boolean;
 };
 
-type BoardActions =
+type StageActions =
     | StageModalAction
     | BoardModalAction
     | deleteBoardModalAction
     | createStageAction
     | InitializeStage
+    | UpdateStageTitle
     | DeleteStageAction
     | UpdateBoardAction
     | DeleteBoard
@@ -102,10 +107,10 @@ type BoardActions =
     | UpdateBoardTitle
     | UpdateBoardDescription
     | ClearFields
-    | CloseTaskModal
+    | SwitchTaskModal
     ;
 
-export const reducer = (state: State, action: BoardActions) => {
+export const reducer = (state: State, action: StageActions) => {
     switch (action.type) {
         case "INITIALIZE_BOARD":
             return {
@@ -171,6 +176,19 @@ export const reducer = (state: State, action: BoardActions) => {
                 ...state,
                 stage: [...state.stage, action.payload],
             };
+        case "UPDATE_STAGE_TITLE":
+            return {
+                ...state,
+                stage: state.stage.map((stage) => {
+                    if (stage.id === action.id) {
+                        return {
+                            ...stage,
+                            title: action.payload,
+                        };
+                    }
+                    return stage;
+                })
+            }
         case "DELETE_STAGE":
             return {
                 ...state,
@@ -207,6 +225,11 @@ export const reducer = (state: State, action: BoardActions) => {
                     ...state.board,
                     description: action.payload,
                 }
+            }
+        case "SWITCH_TASK_MODAL":
+            return {
+                ...state,
+                taskModal: action.payload,
             }
         case "CLEAR_FIELDS":
             return {
