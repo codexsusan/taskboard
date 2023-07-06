@@ -1,9 +1,11 @@
 import { request } from "./apiUtils"
 import { Board } from "./boardUtils";
+import { Task } from "./taskUtils";
 export type Stage = {
     id: string;
     title: string;
     description: string;
+    task?: Task[]
 };
 
 export const getAllStage = async (boardId: Board['id']) => {
@@ -19,7 +21,7 @@ export const createStage = async (stage: Stage, boardId: Board['id']) => {
     return response;
 }
 
-export const deleteStage = async (id: string, boardId: Board['id']) => {
+export const deleteStage = async (id: Stage['id'], boardId: Board['id']) => {
     const response = await request(`/stage/${boardId}/delete/${id}`, "DELETE");
     return response;
 }

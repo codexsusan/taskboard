@@ -1,5 +1,6 @@
 import { Board } from "../../utils/boardUtils";
 import { Stage } from "../../utils/stageUtils";
+import { Task } from "../../utils/taskUtils";
 
 type StageModalAction = {
     type: "OPEN_STAGE_MODAL" | "CLOSE_STAGE_MODAL";
@@ -28,7 +29,7 @@ type DeleteBoard = {
 
 type UpdateBoardAction = {
     type: "UPDATE_BOARD";
-    payload: Board;
+    board: Board;
 };
 
 type InitializeStage = {
@@ -75,9 +76,20 @@ type ClearFields = {
     type: "CLEAR_FIELDS";
 }
 
-type SwitchTaskModal = {
-    type: "SWITCH_TASK_MODAL";
-    payload: boolean;
+
+type UpdateStageOrder = {
+    type: "UPDATE_STAGE_ORDER";
+    payload: string;
+}
+
+type InitializeTask = {
+    type: "INITIALIZE_TASK";
+    payload: Task[];
+}
+
+type UpdateTask = {
+    type: "UPDATE_TASK";
+    payload: Task[];
 }
 
 export type State = {
@@ -87,6 +99,7 @@ export type State = {
     boardLoading: boolean;
     stageLoading: boolean;
     stage: Stage[];
+    task: Task[],
     newStage: Stage;
     deleteBoardModal: boolean;
 };
@@ -107,7 +120,9 @@ type StageActions =
     | UpdateBoardTitle
     | UpdateBoardDescription
     | ClearFields
-    | SwitchTaskModal
+    | UpdateStageOrder
+    | InitializeTask
+    | UpdateTask
     ;
 
 export const reducer = (state: State, action: StageActions) => {
@@ -133,8 +148,8 @@ export const reducer = (state: State, action: StageActions) => {
                 ...state,
                 board: {
                     ...state.board,
-                    title: action.payload.title,
-                    description: action.payload.description,
+                    title: action.board.title,
+                    description: action.board.description,
                 },
             };
         case "DELETE_BOARD":
@@ -167,6 +182,7 @@ export const reducer = (state: State, action: StageActions) => {
                 deleteBoardModal: action.payload,
             };
         case "INITIALIZE_STAGE":
+            console.log(action.payload)
             return {
                 ...state,
                 stage: [...action.payload],
@@ -188,6 +204,14 @@ export const reducer = (state: State, action: StageActions) => {
                     }
                     return stage;
                 })
+            }
+        case "UPDATE_STAGE_ORDER":
+            return {
+                ...state,
+                board: {
+                    ...state.board,
+                    stageOrder: [...state.board.stageOrder!, action.payload],
+                }
             }
         case "DELETE_STAGE":
             return {
@@ -226,11 +250,6 @@ export const reducer = (state: State, action: StageActions) => {
                     description: action.payload,
                 }
             }
-        case "SWITCH_TASK_MODAL":
-            return {
-                ...state,
-                taskModal: action.payload,
-            }
         case "CLEAR_FIELDS":
             return {
                 ...state,
@@ -239,6 +258,11 @@ export const reducer = (state: State, action: StageActions) => {
                     title: "",
                     description: "",
                 }
+            }
+        case "UPDATE_TASK":
+            return {
+                ...state,
+                task: [...state.task, ...action.payload]
             }
         default:
             return state;

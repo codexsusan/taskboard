@@ -1,24 +1,18 @@
 import React from "react";
-import { Stage } from "../../utils/stageUtils";
+import { Stage } from "../BoardView/reducer";
 import Modal from "../../common/Modal";
 import Button from "../../common/Buttons";
 import InputField from "../../common/InputField";
 
 export function AddStage(props: {
   open: boolean;
-  newStage: Stage;
   closeCB: () => void;
-  createStageCB: (stage: Stage) => void;
-  updateNewStageTitleCB?: (title: string) => void;
-  updateNewStageDescriptionCB?: (description: string) => void;
+  createStageCB?: (stage: Stage) => void;
 }) {
   return (
     <Modal open={props.open} closeCB={props.closeCB}>
       <StageCreateModal
-        newStage={props.newStage}
-        updateNewStageTitleCB={props.updateNewStageTitleCB}
-        updateNewStageDescriptionCB={props.updateNewStageDescriptionCB}
-        createStageCB={props.createStageCB}
+        createStageCB={props.createStageCB!}
         closeCB={props.closeCB}
       />
     </Modal>
@@ -28,10 +22,28 @@ export function AddStage(props: {
 export function StageCreateModal(props: {
   createStageCB: (stage: Stage) => void;
   closeCB?: () => void;
-  newStage: Stage;
-  updateNewStageTitleCB?: (title: string) => void;
-  updateNewStageDescriptionCB?: (description: string) => void;
 }) {
+  const [stage, setStage] = React.useState<Stage>({
+    id: "",
+    title: "",
+    description: "",
+    tasks: [],
+  });
+
+  const updateTitleCB = (value: string) => {
+    setStage({
+      ...stage,
+      title: value,
+    });
+  };
+
+  const updateDescriptionCB = (value: string) => {
+    setStage({
+      ...stage,
+      description: value,
+    });
+  };
+
   return (
     <div className="w-full divide-y divide-gray-200">
       <h1 className="text-2xl text-gray-700 text-center my-2">Create Stage</h1>
@@ -39,21 +51,21 @@ export function StageCreateModal(props: {
         className="py-4 flex flex-col gap-y-4"
         onSubmit={(e) => {
           e.preventDefault();
-          props.createStageCB!(props.newStage);
+          props.createStageCB(stage);
           props.closeCB!();
         }}
       >
         <InputField
-          value={props.newStage.title}
-          onValueChange={props.updateNewStageTitleCB}
+          value={stage.title}
+          onValueChange={updateTitleCB}
           label="Title"
           type="text"
         />
         <InputField
-          onValueChange={props.updateNewStageDescriptionCB}
+          onValueChange={updateDescriptionCB}
           label="Description"
           type="text"
-          value={props.newStage.description}
+          value={stage.description}
         />
         <div className="flex items-center w-full justify-between">
           <Button theme="dark" title="Cancel" onClick={props.closeCB} />

@@ -1,13 +1,14 @@
 import React from "react";
+import { Task } from "../../utils/taskUtils";
 import DropdownModal from "../../common/DropdownModal";
 import Icon from "../../common/Icon";
-import { Task } from "../../utils/taskUtils";
-import { UpdateTaskModal } from "./TaskComp";
+import { UpdateTaskModal } from "../task/TaskComp";
+import { Stage } from "./reducer";
 
-export function TaskCard(props: {
+function TaskBox(props: {
   task: Task;
-  deleteTaskCB: (id: string) => void;
-  updateTaskCB: (task: Task) => void;
+  stageId: Stage["id"];
+  deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
 }) {
   const [taskModal, setTaskModal] = React.useState(false);
 
@@ -35,12 +36,13 @@ export function TaskCard(props: {
             {props.task.priority.charAt(0).toUpperCase() +
               props.task.priority.slice(1)}
           </div>
-          {/* <DropdownModal
+          <DropdownModal
+            stageId={props.stageId}
             task={props.task}
             openTaskModalCB={openTaskCB}
             deleteTaskCB={props.deleteTaskCB}
-            updateTaskCB={props.updateTaskCB}
-          /> */}
+            // updateTaskCB={props.updateTaskCB}
+          />
         </div>
       </div>
       <div className="my-1">
@@ -55,8 +57,10 @@ export function TaskCard(props: {
         task={props.task}
         open={taskModal}
         closeCB={closeTaskCB}
-        updateTaskCB={props.updateTaskCB}
+        // updateTaskCB={props.updateTaskCB}
       />
     </div>
   );
 }
+
+export default TaskBox;

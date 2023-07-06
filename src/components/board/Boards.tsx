@@ -39,6 +39,10 @@ function Boards() {
     dispatch({ type: "UPDATE_MODAL_STATUS", payload: false });
   };
 
+  const updateNewBoardCB = (board: Board) => {
+    dispatch({ type: "UPDATE_NEW_BOARD", board });
+  };
+
   const updateNewBoardTitleCB = (value: string) => {
     dispatch({ type: "UPDATE_NEW_BOARD_TITLE", payload: value });
   };
@@ -99,11 +103,12 @@ function Boards() {
       </div>
       <Modal open={state.modalStatus} closeCB={() => closeModalCB()}>
         <BoardBox
-          updateNewBoardTitleCB={updateNewBoardTitleCB}
-          updateNewBoardDescriptionCB={updateNewBoardDescriptionCB}
+          updateNewBoardCB={updateNewBoardCB}
           closeCB={closeModalCB}
           addBoardCB={addBoardCB}
           newBoard={state.newBoard}
+          updateNewBoardTitleCB={updateNewBoardTitleCB}
+          updateNewBoardDescriptionCB={updateNewBoardDescriptionCB}
         />
       </Modal>
     </div>
@@ -115,6 +120,7 @@ export function BoardBox(props: {
   updateBoardCB?: (board: Board) => void;
   closeCB?: () => void;
   newBoard: Board;
+  updateNewBoardCB?: (board: Board) => void;
   updateNewBoardTitleCB?: (value: string) => void;
   updateNewBoardDescriptionCB?: (value: string) => void;
 }) {
@@ -135,12 +141,12 @@ export function BoardBox(props: {
       >
         <InputField
           value={props.newBoard.title}
-          onValueChange={props.updateNewBoardTitleCB}
+          onValueChange={(value) => props.updateNewBoardTitleCB!(value)}
           label="Title"
           type="text"
         />
         <InputField
-          onValueChange={props.updateNewBoardDescriptionCB}
+          onValueChange={(value) => props.updateNewBoardDescriptionCB!(value)}
           label="Description"
           type="text"
           value={props.newBoard.description}

@@ -5,8 +5,9 @@ import AuthContainer from "../hoc/AuthContainer";
 import Auth from "../components/auth/Auth";
 import AppContainer from "../hoc/AppContainer";
 import Board from "../components/board/Boards";
-import Stages from "../components/stage/Stage";
 import Errorpage from "../components/Errorpage";
+import BoardView from "../components/BoardView/BoardView";
+import Stages from "../components/stage/Stage";
 
 export const router = createBrowserRouter([
   {
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
     path: "/board/:boardId",
     element: (
       <AppContainer>
-        <Stages />
+        <BoardView />
       </AppContainer>
     ),
   },

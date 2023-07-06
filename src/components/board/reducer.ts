@@ -22,6 +22,11 @@ type addBoardAction = {
     payload: Board;
 };
 
+type UpdateNewBoard = {
+    type: "UPDATE_NEW_BOARD";
+    board: Board;
+}
+
 type updateNewBoardTitle = {
     type: "UPDATE_NEW_BOARD_TITLE";
     payload: string;
@@ -36,6 +41,7 @@ export type ReducerAction =
     | InitializeState
     | updateModalStatus
     | addBoardAction
+    | UpdateNewBoard
     | updateNewBoardDescription
     | updateNewBoardTitle;
 
@@ -51,6 +57,11 @@ export const reducer = (state: BoardState, action: ReducerAction) => {
             return { ...state, modalStatus: action.payload };
         case "ADD_BOARD":
             return { ...state, boards: [...state.boards, action.payload] };
+        case "UPDATE_NEW_BOARD":
+            return {
+                ...state,
+                newBoard: action.board,
+            }
         case "UPDATE_NEW_BOARD_TITLE":
             return { ...state, newBoard: { ...state.newBoard, title: action.payload } };
         case "UPDATE_NEW_BOARD_DESCRIPTION":

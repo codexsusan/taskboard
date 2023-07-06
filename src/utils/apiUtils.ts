@@ -23,14 +23,13 @@ export const request = async (endpoint: string, method: methodType = "GET", data
         method,
         headers: {
             "Content-Type": "application/json",
-            "auth-token": auth,
+            "auth-token": `${auth}`,
         },
         body: method !== "GET" ? JSON.stringify(data) : undefined,
     });
     if (response.ok) {
         return await response.json();
     }
-
     throw new Error(response.statusText);
 }
 

@@ -4,7 +4,9 @@ export type Board = {
     id: string;
     title: string;
     description: string;
+    stageOrder?: string[];
 }
+
 // Done
 export const createBoard = async (board: Board) => {
     const response = request("/board/create", "POST", {

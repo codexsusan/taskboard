@@ -8,7 +8,6 @@ import {
   updateBoard,
 } from "../../utils/boardUtils";
 import { IconButton } from "../../common/IconButton";
-import { ShimmerUIButton } from "shimmer-ui-effect";
 
 import {
   Stage,
@@ -32,10 +31,12 @@ function Stages() {
       id: boardId,
       title: "",
       description: "",
+      stageOrder: [],
     },
     boardLoading: true,
     stageLoading: true,
     stage: [],
+    task: [],
     newStage: {
       id: "",
       title: "",
@@ -93,6 +94,10 @@ function Stages() {
     dispatch({ type: "UPDATE_BOARD_DESCRIPTION", payload: value });
   };
 
+  const updateStageOrderCB = (stage: string) => {
+    dispatch({ type: "UPDATE_STAGE_ORDER", payload: stage });
+  };
+
   const deleteBoardCB = () => {
     deleteBoard(boardId!)
       .then((res) => {
@@ -106,8 +111,7 @@ function Stages() {
   };
 
   const updateBoardCB = (board: Board) => {
-    // UpdateBoard is working but not updating the state so we need to load the fetch the data from db as it is currently sending previously loaded data
-    dispatch({ type: "UPDATE_BOARD", payload: board });
+    dispatch({ type: "UPDATE_BOARD", board });
     updateBoard(board)
       .then((res) => {
         console.log(res);
@@ -127,14 +131,6 @@ function Stages() {
     dispatch({ type: "CLOSE_STAGE_MODAL", payload: false });
   };
 
-  const updateNewStageTitleCB = (value: string) => {
-    dispatch({ type: "UPDATE_NEW_STAGE_TITLE", payload: value });
-  };
-
-  const updateNewStageDescriptionCB = (value: string) => {
-    dispatch({ type: "UPDATE_NEW_STAGE_DESCRIPTION", payload: value });
-  };
-
   const createStageCB = (stage: Stage) => {
     createStage(stage, boardId!)
       .then((res) => {
@@ -146,6 +142,7 @@ function Stages() {
             description: stage.description,
           },
         });
+        updateStageOrderCB(stage.title);
       })
       .catch((err) => {
         console.log(err);
@@ -153,7 +150,7 @@ function Stages() {
     dispatch({ type: "CLEAR_FIELDS" });
   };
 
-  const updateStageTitleCB = ( id: string,title: string) => {
+  const updateStageTitleCB = (id: string, title: string) => {
     dispatch({ type: "UPDATE_STAGE_TITLE", payload: title, id });
     console.log(title);
     updateStageTitle(id, title, boardId!)
@@ -178,18 +175,6 @@ function Stages() {
 
   return (
     <div className="px-8 h-3/4">
-      {state.boardLoading && (
-        <div className="flex justify-between items-center">
-          <div className="mt-5 flex gap-x-4">
-            <ShimmerUIButton borderRadius={4} height={40} width={100} />
-            <ShimmerUIButton borderRadius={4} height={40} width={40} />
-            <ShimmerUIButton borderRadius={4} height={40} width={40} />
-          </div>
-          <div className="mt-5">
-            <ShimmerUIButton borderRadius={4} height={40} width={80} />
-          </div>
-        </div>
-      )}
       {!state.boardLoading && (
         <div className="flex justify-between items-center">
           <div className="flex my-5 gap-x-4 items-center">
@@ -208,16 +193,19 @@ function Stages() {
       )}
       <Divider />
       <div className="flex gap-x-4 h-full">
-        {state.stage.map((stage) => {
-          return (
-            <StageCard
-              updateStageTitleCB={updateStageTitleCB}
-              key={stage.id}
-              stage={stage}
-              deleteStageCB={deleteStageCB}
-            />
-          );
-        })}
+        {state.board.stageOrder &&
+          state.board.stageOrder.map((stage) => {
+            const stageData = state.stage.find((s) => s.title === stage);
+            // return <div key={stageData?.id}>{stageData?.id}</div>;
+            return stageData ? (
+              <StageCard
+                updateStageTitleCB={updateStageTitleCB}
+                key={stageData?.id}
+                stage={stageData}
+                deleteStageCB={deleteStageCB}
+              />
+            ) : null;
+          })}
       </div>
       <UpdateBoard
         open={state.boardModal}
@@ -231,9 +219,6 @@ function Stages() {
         open={state.stageModal}
         closeCB={closeStageModalCB}
         createStageCB={createStageCB}
-        newStage={state.newStage}
-        updateNewStageTitleCB={updateNewStageTitleCB}
-        updateNewStageDescriptionCB={updateNewStageDescriptionCB}
       />
       <DeleteModal
         deleteBoardCB={deleteBoardCB}

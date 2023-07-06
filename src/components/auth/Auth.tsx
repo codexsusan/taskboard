@@ -103,6 +103,8 @@ function Login(props: {
       if (userData.success) {
         navigate("/");
         localStorage.setItem("token", userData.authToken);
+      } else {
+        console.log(userData);
       }
     } catch (error) {
       console.log(error);
@@ -152,8 +154,10 @@ function Signup(props: {
   const navigate = useNavigate();
 
   const handleSignUp = async (user: User) => {
+    console.log(user)
     try {
       const userData = await createUser(user);
+      console.log(userData);
       if (userData.success) {
         navigate("/home");
         localStorage.setItem("token", userData.authToken);
@@ -164,7 +168,8 @@ function Signup(props: {
   };
   return (
     <form
-      onSubmit={() => {
+      onSubmit={(e) => {
+        e.preventDefault();
         handleSignUp(props.state);
       }}
       className="w-1/4 flex flex-col gap-y-3"

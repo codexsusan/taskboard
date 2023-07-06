@@ -1,10 +1,12 @@
 import { request } from "./apiUtils"
+import { Stage } from "./stageUtils";
 
 export type Task = {
     id: string;
     title: string;
     description: string;
     priority: string;
+    stageId?: string
 }
 
 export const getAllTask = async (stageId: Task['id']) => {
@@ -12,12 +14,27 @@ export const getAllTask = async (stageId: Task['id']) => {
     return response;
 }
 
-export const createTask = async (task: Task, stageId: Task['id']) => {
+export const createTask = async (stageId: Stage['id'], task: Task) => {
     const response = await request(`/task/${stageId}/create`, "POST", {
         id: task.id,
         title: task.title,
         description: task.description,
         priority: task.priority
     });
+    return response;
+}
+
+export const getTask = async (taskId: Task['id'], stageId: Stage['id']) => {
+    const response = await request(`/task/${stageId}/list/${taskId}`, "GET");
+    return response;
+}
+
+export const deleteTask = async (stageId: Stage['id'], taskId: Task['id']) => {
+    const response = await request(`/task/${stageId}/delete/${taskId}`, "DELETE");
+    return response;
+}
+
+export const updateTask = async (taskId: Task['id'], stageId: Stage['id'], task: Task) => {
+    const response = await request(`/task/${stageId}/update/${taskId}`, "PATCH", task);
     return response;
 }

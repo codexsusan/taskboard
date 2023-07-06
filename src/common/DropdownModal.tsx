@@ -1,14 +1,21 @@
 // import React from 'react'
 import React, { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import { Link } from "react-router-dom";
 import Icon from "./Icon";
+import { Task } from "../utils/taskUtils";
+import { Stage } from "../components/BoardView/reducer";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-function DropdownModal() {
+function DropdownModal(props: {
+  task: Task;
+  stageId: Stage["id"];
+  openTaskModalCB?: () => void;
+  deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
+  updateTaskCB?: (task: Task) => void;
+}) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button className="">
@@ -28,8 +35,8 @@ function DropdownModal() {
           <div className="py-1">
             <Menu.Item>
               {({ active }) => (
-                <Link
-                  to="#"
+                <div
+                  onClick={props.openTaskModalCB}
                   className={classNames(
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                     "block px-4 py-2 text-sm"
@@ -39,13 +46,15 @@ function DropdownModal() {
                     <Icon name="edit" />
                     <div>Edit Task</div>
                   </div>
-                </Link>
+                </div>
               )}
             </Menu.Item>
             <Menu.Item>
               {({ active }) => (
-                <Link
-                  to="#"
+                <div
+                  onClick={() =>
+                    props.deleteTaskCB!(props.stageId, props.task.id)
+                  }
                   className={classNames(
                     active ? "bg-gray-100 text-gray-900" : "text-gray-700",
                     "block px-4 py-2 text-sm"
@@ -55,7 +64,7 @@ function DropdownModal() {
                     <Icon name="delete" />
                     <div>Delete Task</div>
                   </div>
-                </Link>
+                </div>
               )}
             </Menu.Item>
             {/* <form method="POST" action="#">

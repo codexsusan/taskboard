@@ -2,131 +2,21 @@ import React, { useEffect, useReducer, useState } from "react";
 import { IconButton } from "../../common/IconButton";
 import Divider from "../../common/Divider";
 import { Stage } from "../../utils/stageUtils";
-import { Task, createTask, getAllTask } from "../../utils/taskUtils";
-import { AddTaskModal, TaskCard } from "../task/TaskComp";
+import {
+  Task,
+  createTask,
+  deleteTask,
+  getAllTask,
+} from "../../utils/taskUtils";
+import { AddTaskModal } from "../task/TaskComp";
 import Button from "../../common/Buttons";
-
-type State = {
-  task: Task[];
-  newTask: Task;
-  modalTask: boolean;
-  editStage: boolean;
-};
-
-type InitializeTask = {
-  type: "INITIALIZE_TASK";
-  payload: Task[];
-};
-
-type SwitchTaskModal = {
-  type: "SWITCH_TASK_MODAL";
-  payload: boolean;
-};
-
-type UpdateTitle = {
-  type: "UPDATE_TITLE";
-  payload: string;
-};
-
-type UpdateDescription = {
-  type: "UPDATE_DESCRIPTION";
-  payload: string;
-};
-
-type UpdatePriority = {
-  type: "UPDATE_PRIORITY";
-  payload: string;
-};
-
-type AddNewTask = {
-  type: "ADD_NEW_TASK";
-  payload: Task;
-};
-
-type ClearFields = {
-  type: "CLEAR_FIELDS";
-};
-
-type EditStageStatus = {
-  type: "EDIT_STAGE";
-  payload: boolean;
-};
-
-type TaskAction =
-  | InitializeTask
-  | SwitchTaskModal
-  | UpdateTitle
-  | UpdateDescription
-  | AddNewTask
-  | EditStageStatus
-  | ClearFields
-  | UpdatePriority;
-
-const reducer = (state: State, action: TaskAction) => {
-  switch (action.type) {
-    case "INITIALIZE_TASK":
-      return {
-        ...state,
-        task: [...action.payload],
-      };
-    case "SWITCH_TASK_MODAL":
-      return {
-        ...state,
-        modalTask: action.payload,
-      };
-    case "UPDATE_TITLE":
-      return {
-        ...state,
-        newTask: {
-          ...state.newTask,
-          title: action.payload,
-        },
-      };
-    case "UPDATE_DESCRIPTION":
-      return {
-        ...state,
-        newTask: {
-          ...state.newTask,
-          description: action.payload,
-        },
-      };
-    case "ADD_NEW_TASK":
-      return {
-        ...state,
-        task: [...state.task, action.payload],
-      };
-    case "UPDATE_PRIORITY":
-      return {
-        ...state,
-        newTask: {
-          ...state.newTask,
-          priority: action.payload,
-        },
-      };
-    case "EDIT_STAGE":
-      return {
-        ...state,
-        editStage: action.payload,
-      };
-    case "CLEAR_FIELDS":
-      return {
-        ...state,
-        newTask: {
-          id: "",
-          title: "",
-          description: "",
-          priority: "",
-        },
-      };
-    default:
-      return state;
-  }
-};
+import { TaskCard } from "../task/TaskCard";
+import { reducer } from "./cardReducer";
 
 export function StageCard(props: {
   stage: Stage;
-  deleteStageCB: (id: string) => void;
-  updateStageTitleCB: (id: string, title: string) => void;
+  deleteStageCB?: (id: string) => void;
+  updateStageTitleCB?: (id: string, title: string) => void;
 }) {
   const [title, setTitle] = useState(props.stage.title);
   const [state, dispatch] = useReducer(reducer, {
@@ -150,15 +40,8 @@ export function StageCard(props: {
     dispatch({ type: "CLEAR_FIELDS" });
   };
 
-  const updateTitleCB = (value: Task["title"]) => {
-    dispatch({ type: "UPDATE_TITLE", payload: value });
-  };
-
-  const updateDescriptionCB = (value: Task["description"]) => {
-    dispatch({ type: "UPDATE_DESCRIPTION", payload: value });
-  };
-  const updatePriorityCB = (value: Task["priority"]) => {
-    dispatch({ type: "UPDATE_PRIORITY", payload: value });
+  const updateNewTask = (task: Task) => {
+    dispatch({ type: "UPDATE_NEW_TASK", task });
   };
 
   const enableEditStage = () => {
@@ -169,8 +52,19 @@ export function StageCard(props: {
     dispatch({ type: "EDIT_STAGE", payload: false });
   };
 
+  const deleteTaskCB = (id: string) => {
+    dispatch({ type: "DELETE_TASK", id });
+    deleteTask(id, props.stage.id)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+  };
+
+  const updateTaskCB = (task: Task) => {
+    dispatch({ type: "UPDATE_TASK", payload: task });
+  };
+
   const createTaskCB = () => {
-    createTask(state.newTask, props.stage.id)
+    createTask(props.stage.id, state.newTask)
       .then((res) => {
         dispatch({
           type: "ADD_NEW_TASK",
@@ -200,8 +94,44 @@ export function StageCard(props: {
       });
   }, [props.stage.id]);
 
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+  }
+
+  function handleOnDrop(e: React.DragEvent) {
+    const data = JSON.parse(e.dataTransfer.getData("task"));
+    console.log(data);
+    if (data.stageId === props.stage.id) return;
+    createTask(props.stage.id, data)
+      .then((res) => {
+        dispatch({
+          type: "ADD_NEW_TASK",
+          payload: {
+            id: res.data.id,
+            title: res.data.title,
+            description: res.data.description,
+            priority: res.data.priority,
+          },
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    deleteTask(data.id, data.stageId)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
   return (
-    <div className="bg-[#F5F5F5] mt-5 px-4 py-2 rounded w-80 h-5/6">
+    <div
+      onDrop={(e) => handleOnDrop(e)}
+      onDragOver={handleDragOver}
+      className="bg-[#F5F5F5] mt-5 px-4 py-2 rounded w-80 h-5/6"
+    >
       <div className="flex mb-2 items-center justify-between">
         {!state.editStage && (
           <>
@@ -215,7 +145,7 @@ export function StageCard(props: {
               />
               <IconButton
                 name="delete"
-                onClick={() => props.deleteStageCB(props.stage.id)}
+                onClick={() => props.deleteStageCB!(props.stage.id)}
               />
             </div>
           </>
@@ -238,10 +168,12 @@ export function StageCard(props: {
                 name="check"
                 onClick={() => {
                   disableEditStage();
-                  props.updateStageTitleCB(props.stage.id, title);
+                  props.updateStageTitleCB!(props.stage.id, title);
                 }}
               />
               <IconButton
+                // stroke="#FFFFFF"
+                customClass="bg-red-500"
                 name="cancel"
                 onClick={() => {
                   disableEditStage();
@@ -253,25 +185,31 @@ export function StageCard(props: {
         )}
       </div>
       <Divider />
-      {state.task.length > 0 &&
-        state.task.map((task: Task) => {
-          return <TaskCard task={task} key={task.id} />;
+      <div>
+        {state.task.map((task: Task) => {
+          return (
+            <TaskCard
+              updateTaskCB={updateTaskCB}
+              deleteTaskCB={deleteTaskCB}
+              task={task}
+              key={task.id}
+            />
+          );
         })}
+      </div>
       <Button
         onClick={openTaskModalCB}
         customClass="w-full mt-3"
         theme="white"
         title="Add Task"
       />
-      <AddTaskModal
+      {/* <AddTaskModal
         newTask={state.newTask}
         open={state.modalTask}
         closeCB={closeTaskModalCB}
-        updateTitleCB={updateTitleCB}
-        updateDescriptionCB={updateDescriptionCB}
-        updatePriorityCB={updatePriorityCB}
+        updateNewTask={updateNewTask}
         createTaskCB={createTaskCB}
-      />
+      /> */}
     </div>
   );
 }

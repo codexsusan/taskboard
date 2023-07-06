@@ -1,27 +1,32 @@
 import React from "react";
 
-function Icon(props: { name: string }) {
+type Props = {
+  name: string;
+  stroke?: string;
+};
+
+function Icon(props: Props) {
   switch (props.name) {
     case "edit":
-      return <EditIcon />;
+      return <EditIcon {...props} />;
     case "delete":
-      return <DeleteIcon />;
+      return <DeleteIcon {...props} />;
     case "add":
-      return <AddIcon />;
+      return <AddIcon {...props} />;
     case "detail":
-      return <HorizontalDetail />;
+      return <HorizontalDetail {...props} />;
     case "comment":
-      return <Comment />;
+      return <Comment {...props} />;
     case "check":
-      return <Check />;
+      return <Check {...props} />;
     case "cancel":
-      return <Cancel />;
+      return <Cancel {...props} />;
     default:
       return <></>;
   }
 }
 
-function AddIcon() {
+function AddIcon(props: Props) {
   return (
     <>
       <svg
@@ -42,7 +47,7 @@ function AddIcon() {
   );
 }
 
-function EditIcon() {
+function EditIcon(props: Props) {
   return (
     <>
       <svg
@@ -63,7 +68,7 @@ function EditIcon() {
   );
 }
 
-function DeleteIcon() {
+function DeleteIcon(props: Props) {
   return (
     <>
       <svg
@@ -71,7 +76,7 @@ function DeleteIcon() {
         fill="none"
         viewBox="0 0 24 24"
         strokeWidth="1.5"
-        stroke="currentColor"
+        stroke={props.stroke ? props.stroke : "currentColor"}
         className="w-6 h-6"
       >
         <path
@@ -84,14 +89,14 @@ function DeleteIcon() {
   );
 }
 
-function HorizontalDetail() {
+function HorizontalDetail(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth="1.5"
-      stroke="currentColor"
+      stroke={props.stroke ? props.stroke : "currentColor"}
       className="w-6 h-6"
     >
       <path
@@ -103,7 +108,7 @@ function HorizontalDetail() {
   );
 }
 
-function Comment() {
+function Comment(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -122,7 +127,7 @@ function Comment() {
   );
 }
 
-function Check() {
+function Check(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -141,14 +146,14 @@ function Check() {
   );
 }
 
-function Cancel() {
+function Cancel(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
-      stroke="currentColor"
+      stroke={props.stroke ? props.stroke : "currentColor"}
       className="w-6 h-6"
     >
       <path
