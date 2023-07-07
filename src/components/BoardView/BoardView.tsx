@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from "react";
-import { Board, getBoard } from "../../utils/boardUtils";
-import { useParams } from "react-router-dom";
+import { Board, deleteBoard, getBoard, updateBoard } from "../../utils/boardUtils";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   createStage,
   deleteStage,
@@ -13,20 +13,86 @@ import Divider from "../../common/Divider";
 import StageCol from "./StageCol";
 import { Stage, reducer } from "./reducer";
 import { AddStage } from "../stage/StageComp";
-import { Task, createTask, deleteTask } from "../../utils/taskUtils";
+import {
+  Task,
+  createTask,
+  deleteTask,
+  updateTask,
+} from "../../utils/taskUtils";
+import { DeleteModal, UpdateBoard } from "../board/BoardComp";
 
-const openStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
-  setCreateStageModal(true);
+// const openStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
+//   setCreateStageModal(true);
+// };
+
+// const closeStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
+//   setCreateStageModal(false);
+// };
+
+// const enableDeleteBoard = (setDeleteBoardModal: (value: boolean) => void) => {
+//   setDeleteBoardModal(true);
+// };
+
+// const disableDeleteBoard = (setDeleteBoardModal: (value: boolean) => void) => {
+//   setDeleteBoardModal(false);
+// };
+
+const enableUpdateBoard = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, updateBoard: true });
 };
 
-const closeStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
-  setCreateStageModal(false);
+const disableUpdateBoard = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, updateBoard: false });
+};
+
+const enableDeleteBoard = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, deleteBoard: true });
+};
+
+const disableDeleteBoard = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, deleteBoard: false });
+};
+
+const enableCreateStage = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, createStage: true });
+};
+
+const disableCreateStage = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, createStage: false });
+};
+
+type ModalState = {
+  updateBoard: boolean;
+  deleteBoard: boolean;
+  createStage: boolean;
 };
 
 function BoardView() {
   const { boardId } = useParams();
-
-  const [createStageModal, setCreateStageModal] = React.useState(false);
+  const navigate = useNavigate();
+  const [modalStatus, setModalStatus] = React.useState<ModalState>({
+    updateBoard: false,
+    deleteBoard: false,
+    createStage: false,
+  });
 
   const [state, dispatch] = useReducer(reducer, {
     board: {} as Board,
@@ -36,6 +102,9 @@ function BoardView() {
   useEffect(() => {
     getBoard(boardId!)
       .then((res) => {
+        if (!res.success) {
+          return navigate("/board");
+        }
         dispatch({
           type: "INITIALIZE_BOARD",
           payload: res.data,
@@ -50,7 +119,30 @@ function BoardView() {
         });
       })
       .catch((err) => console.log(err));
-  }, [boardId]);
+  }, [boardId, navigate]);
+
+  const updateBoardCB = (board: Board) => {
+    dispatch({ type: "UPDATE_BOARD", payload: board });
+    updateBoard(board)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  const deleteBoardCB = () => {
+    deleteBoard(boardId!)
+      .then((res) => {
+        if (res.success) {
+          navigate("/board");
+        } else {
+          alert("Board not deleted");
+        }
+      })
+      .catch((err) => {});
+  };
 
   const createStageCB = (stage: Stage) => {
     dispatch({
@@ -109,6 +201,17 @@ function BoardView() {
       .catch((err) => console.log(err));
   };
 
+  const updateTaskCB = (task: Task) => {
+    dispatch({ type: "UPDATE_TASK", payload: task });
+    updateTask(task)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const deleteTaskCB = (stageId: Stage["id"], taskId: Task["id"]) => {
     deleteTask(stageId, taskId)
       .then((res) => {
@@ -135,13 +238,19 @@ function BoardView() {
       <div className="flex justify-between items-center">
         <div className="flex my-5 gap-x-4 items-center">
           <div className="text-2xl font-semibold">{state.board.title}</div>
-          <IconButton name="edit" />
-          <IconButton name="delete" />
+          <IconButton
+            name="edit"
+            onClick={() => enableUpdateBoard(modalStatus, setModalStatus)}
+          />
+          <IconButton
+            name="delete"
+            onClick={() => enableDeleteBoard(modalStatus, setModalStatus)}
+          />
         </div>
         <div>
           <Button
             onClick={() => {
-              openStageModalCB(setCreateStageModal);
+              enableCreateStage(modalStatus, setModalStatus);
             }}
             title="New Stage"
             theme="light"
@@ -158,6 +267,7 @@ function BoardView() {
                 switchStage={switchStage}
                 deleteTaskCB={deleteTaskCB}
                 addTaskCB={addTaskCB}
+                updateTaskCB={updateTaskCB}
                 updateStageTitleCB={UpdateStageTitleCB}
                 deleteStageCB={deleteStageCB}
                 key={stageData.id}
@@ -167,11 +277,24 @@ function BoardView() {
           })}
       </div>
       <AddStage
-        open={createStageModal}
+        open={modalStatus.createStage}
         closeCB={() => {
-          closeStageModalCB(setCreateStageModal);
+          disableCreateStage(modalStatus, setModalStatus);
         }}
         createStageCB={createStageCB}
+      />
+      <UpdateBoard
+        open={modalStatus.updateBoard}
+        closeCB={() => disableUpdateBoard(modalStatus, setModalStatus)}
+        boardData={state.board}
+        updateBoardCB={updateBoardCB}
+        // updateNewBoardTitleCB={updateBoardTitleCB}
+        // updateNewBoardDescriptionCB={updateBoardDescriptionCB}
+      />
+      <DeleteModal
+        deleteBoardCB={deleteBoardCB}
+        open={modalStatus.deleteBoard}
+        closeCB={() => disableDeleteBoard(modalStatus, setModalStatus)}
       />
     </div>
   );

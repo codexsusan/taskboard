@@ -14,7 +14,6 @@ function DropdownModal(props: {
   stageId: Stage["id"];
   openTaskModalCB?: () => void;
   deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
-  updateTaskCB?: (task: Task) => void;
 }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
@@ -67,21 +66,6 @@ function DropdownModal(props: {
                 </div>
               )}
             </Menu.Item>
-            {/* <form method="POST" action="#">
-              <Menu.Item>
-                {({ active }) => (
-                  <button
-                    type="submit"
-                    className={classNames(
-                      active ? "bg-gray-100 text-gray-900" : "text-gray-700",
-                      "block w-full px-4 py-2 text-left text-sm"
-                    )}
-                  >
-                    Sign out
-                  </button>
-                )}
-              </Menu.Item>
-            </form> */}
           </div>
         </Menu.Items>
       </Transition>

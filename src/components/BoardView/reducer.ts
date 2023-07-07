@@ -18,6 +18,11 @@ type InitializeBoard = {
     payload: Board;
 };
 
+type UpdateBoard = {
+    type: "UPDATE_BOARD";
+    payload: Board;
+}
+
 type InitializeStage = {
     type: "INITIALIZE_STAGE";
     payload: Stage[];
@@ -57,25 +62,22 @@ type DeleteTask = {
     }
 }
 
-type SwitchStage = {
-    type: "SWITCH_STAGE";
-    payload: {
-        source: Stage['id'];
-        destination: Stage['id'];
-        task: Task;
-    }
+type UpdateTask = {
+    type: "UPDATE_TASK";
+    payload: Task;
 }
+
 
 export type Action =
     | InitializeBoard
+    | UpdateBoard
     | InitializeStage
     | AddStage
     | DeleteStage
     | UpdateStageTitle
     | AddTask
     | DeleteTask
-    | SwitchStage;
-
+    | UpdateTask;
 export const reducer = (state: State, action: Action) => {
     switch (action.type) {
         case "INITIALIZE_BOARD":
@@ -83,6 +85,11 @@ export const reducer = (state: State, action: Action) => {
                 ...state,
                 board: action.payload,
             };
+        case "UPDATE_BOARD":
+            return {
+                ...state,
+                board: action.payload,
+            }
         case "INITIALIZE_STAGE":
             return {
                 ...state,
@@ -128,6 +135,29 @@ export const reducer = (state: State, action: Action) => {
                     return stage;
                 })
             }
+        case "UPDATE_TASK":
+            return {
+                ...state,
+                stage: state.stage.map((stage: Stage) => {
+                    if (stage.id === action.payload.stageId) {
+                        return {
+                            ...stage,
+                            tasks: stage.tasks.map((task: Task) => {
+                                if (task.id === action.payload.id) {
+                                    return {
+                                        ...task,
+                                        title: action.payload.title,
+                                        description: action.payload.description,
+                                        priority: action.payload.priority,
+                                    }
+                                }
+                                return task;
+                            })
+                        }
+                    }
+                    return stage;
+                })
+            }
         case "DELETE_TASK":
             return {
                 ...state,
@@ -141,25 +171,7 @@ export const reducer = (state: State, action: Action) => {
                     return stage;
                 })
             }
-        case "SWITCH_STAGE":
-            return {
-                ...state,
-                stage: state.stage.map((stage) => {
-                    if (stage.id === action.payload.source) {
-                        return {
-                            ...stage,
-                            tasks: stage.tasks.filter((task) => task.id !== action.payload.task.id),
-                        }
-                    }
-                    if (stage.id === action.payload.destination) {
-                        return {
-                            ...stage,
-                            tasks: [...stage.tasks, action.payload.task],
-                        }
-                    }
-                    return stage;
-                })
-            }
+
         default:
             return state;
     }

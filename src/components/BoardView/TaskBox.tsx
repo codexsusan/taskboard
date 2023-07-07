@@ -1,24 +1,24 @@
 import React from "react";
 import { Task } from "../../utils/taskUtils";
 import DropdownModal from "../../common/DropdownModal";
-import Icon from "../../common/Icon";
 import { UpdateTaskModal } from "../task/TaskComp";
 import { Stage } from "./reducer";
+
+const openTaskCB = (setTaskModal: (value: boolean) => void) => {
+  setTaskModal(true);
+};
+
+const closeTaskCB = (setTaskModal: (value: boolean) => void) => {
+  setTaskModal(false);
+};
 
 function TaskBox(props: {
   task: Task;
   stageId: Stage["id"];
+  updateTaskCB: (task: Task) => void;
   deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
 }) {
   const [taskModal, setTaskModal] = React.useState(false);
-
-  const openTaskCB = () => {
-    setTaskModal(true);
-  };
-
-  const closeTaskCB = () => {
-    setTaskModal(false);
-  };
 
   function handleOnDrag(e: React.DragEvent, data: Task) {
     e.dataTransfer.setData("task", JSON.stringify(data));
@@ -39,9 +39,8 @@ function TaskBox(props: {
           <DropdownModal
             stageId={props.stageId}
             task={props.task}
-            openTaskModalCB={openTaskCB}
+            openTaskModalCB={() => openTaskCB(setTaskModal)}
             deleteTaskCB={props.deleteTaskCB}
-            // updateTaskCB={props.updateTaskCB}
           />
         </div>
       </div>
@@ -49,15 +48,15 @@ function TaskBox(props: {
         <h1 className="text-lg font-semibold">{props.task.title}</h1>
         <div>{props.task.description}</div>
       </div>
-      <div className="flex gap-x-2 items-center my-2 justify-end">
+      {/* <div className="flex gap-x-2 items-center my-2 justify-end">
         <Icon name="comment" />
         <div className="text-[#787486]">Comment</div>
-      </div>
+      </div> */}
       <UpdateTaskModal
         task={props.task}
         open={taskModal}
-        closeCB={closeTaskCB}
-        // updateTaskCB={props.updateTaskCB}
+        closeCB={() => closeTaskCB(setTaskModal)}
+        updateTaskCB={props.updateTaskCB}
       />
     </div>
   );

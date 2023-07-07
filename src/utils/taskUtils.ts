@@ -34,7 +34,7 @@ export const deleteTask = async (stageId: Stage['id'], taskId: Task['id']) => {
     return response;
 }
 
-export const updateTask = async (taskId: Task['id'], stageId: Stage['id'], task: Task) => {
-    const response = await request(`/task/${stageId}/update/${taskId}`, "PATCH", task);
+export const updateTask = async (task: Task) => {
+    const response = await request(`/task/${task.stageId!}/update/${task.id}`, "PATCH", task);
     return response;
 }

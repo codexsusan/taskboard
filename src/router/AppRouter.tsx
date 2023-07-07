@@ -1,13 +1,13 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import React from "react";
-import Home from "../components/board/Boards";
+import Home from "../components/home/Home";
 import AuthContainer from "../hoc/AuthContainer";
-import Auth from "../components/auth/Auth";
+import Auth from "../components/auth/user/UserAuth";
 import AppContainer from "../hoc/AppContainer";
 import Board from "../components/board/Boards";
 import Errorpage from "../components/Errorpage";
 import BoardView from "../components/BoardView/BoardView";
-import Stages from "../components/stage/Stage";
+import OrgAuth from "../components/auth/org/OrgAuth";
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +17,22 @@ export const router = createBrowserRouter([
   {
     path: "/about",
     element: <div>This is an About page.</div>,
+  },
+  {
+    path: "/org/login",
+    element: (
+      <AuthContainer>
+        <OrgAuth authMethod="login" />
+      </AuthContainer>
+    ),
+  },
+  {
+    path: "/org/register",
+    element: (
+      <AuthContainer>
+        <OrgAuth authMethod="register" />
+      </AuthContainer>
+    ),
   },
   {
     path: "/login",
@@ -32,6 +48,14 @@ export const router = createBrowserRouter([
       <AuthContainer>
         <Auth authMethod="register" />
       </AuthContainer>
+    ),
+  },
+  {
+    path: "/home",
+    element: (
+      <AppContainer>
+        <Home />
+      </AppContainer>
     ),
   },
   {

@@ -5,7 +5,6 @@ import Button from "../../common/Buttons";
 import { useNavigate } from "react-router-dom";
 import { BoardBox } from "./Boards";
 
-
 export function DeleteModal(props: {
   open: boolean;
   closeCB: () => void;
@@ -61,14 +60,15 @@ export function UpdateBoard(props: {
   open: boolean;
   closeCB: () => void;
   boardData: Board;
-  updateBoardCB: (board: Board) => void;
+  updateBoardCB?: (board: Board) => void;
   updateNewBoardTitleCB?: (value: string) => void;
   updateNewBoardDescriptionCB?: (value: string) => void;
 }) {
   return (
     <Modal open={props.open} closeCB={props.closeCB}>
       <BoardBox
-        updateBoardCB={props.updateBoardCB}
+        closeCB={props.closeCB}
+        updateBoardCB={props.updateBoardCB!}
         newBoard={props.boardData}
         updateNewBoardTitleCB={props.updateNewBoardTitleCB}
         updateNewBoardDescriptionCB={props.updateNewBoardDescriptionCB}

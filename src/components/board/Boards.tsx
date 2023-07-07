@@ -5,8 +5,11 @@ import Modal from "../../common/Modal";
 import { listBoard, Board, createBoard } from "../../utils/boardUtils";
 import { BoardState, reducer } from "./reducer";
 import { BoardCard } from "./BoardComp";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Boards() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [state, dispatch] = useReducer(reducer, {
     boards: [],
     loading: true,
@@ -19,10 +22,10 @@ function Boards() {
   } as BoardState);
 
   const addBoardCB = (board: Board) => {
-    dispatch({ type: "ADD_BOARD", payload: board });
     createBoard(board)
       .then((res) => {
         if (res.success) {
+          dispatch({ type: "ADD_BOARD", payload: res.data });
           closeModalCB();
         }
       })
@@ -51,6 +54,9 @@ function Boards() {
   };
 
   useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/board");
+    }
     const fetchBoardData = async () => {
       await listBoard().then((res) => {
         if (res.error) {
@@ -60,10 +66,10 @@ function Boards() {
       });
     };
     fetchBoardData();
-  }, []);
+  }, [location.pathname, navigate]);
 
   return (
-    <div className="px-8 pt-4 h-auto">
+    <div className="px-8 pt-4 h-auto w-full">
       <div className="flex justify-between mb-5">
         <div className="text-2xl font-semibold ">MY BOARDS</div>
         <div>
@@ -124,32 +130,37 @@ export function BoardBox(props: {
   updateNewBoardTitleCB?: (value: string) => void;
   updateNewBoardDescriptionCB?: (value: string) => void;
 }) {
+  const [board, setBoard] = React.useState<Board>(props.newBoard);
+  const type = props.addBoardCB ? "add" : "update";
   return (
     <div className="w-full divide-y divide-gray-200">
-      <h1 className="text-2xl text-gray-700 text-center my-2">Create Board</h1>
+      <h1 className="text-2xl text-gray-700 text-center my-2">
+        {type === "add" ? "Create Board" : "Update Board"}
+      </h1>
       <form
         className="py-4 flex flex-col gap-y-4"
         onSubmit={(e) => {
           e.preventDefault();
           if (props.addBoardCB) {
-            props.addBoardCB(props.newBoard);
+            props.addBoardCB(board);
           }
           if (props.updateBoardCB) {
-            props.updateBoardCB(props.newBoard);
+            props.updateBoardCB(board);
           }
+          props.closeCB!();
         }}
       >
         <InputField
-          value={props.newBoard.title}
-          onValueChange={(value) => props.updateNewBoardTitleCB!(value)}
+          value={board.title}
+          onValueChange={(value) => setBoard({ ...board, title: value })}
           label="Title"
           type="text"
         />
         <InputField
-          onValueChange={(value) => props.updateNewBoardDescriptionCB!(value)}
+          onValueChange={(value) => setBoard({ ...board, description: value })}
           label="Description"
           type="text"
-          value={props.newBoard.description}
+          value={board.description}
         />
         <div className="flex items-center w-full justify-between">
           <Button theme="dark" title="Cancel" onClick={props.closeCB} />

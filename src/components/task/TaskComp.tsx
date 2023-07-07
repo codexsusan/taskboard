@@ -8,9 +8,8 @@ import { Stage } from "../BoardView/reducer";
 type Props = {
   open: boolean;
   closeCB: () => void;
-  newTask?: Task;
-  addTaskCB: (stageId: Stage["id"], task: Task) => void;
   stageId: Stage["id"];
+  addTaskCB: (stageId: Stage["id"], task: Task) => void;
 };
 
 export function AddTaskModal(props: Props) {
@@ -91,18 +90,18 @@ export function UpdateTaskModal(props: {
   open: boolean;
   closeCB: () => void;
   task: Task;
-  updateTaskCB?: (task: Task) => void;
+  updateTaskCB: (task: Task) => void;
 }) {
   const [currentTask, setCurrentTask] = useState<Task>(props.task);
   return (
     <Modal open={props.open} closeCB={props.closeCB}>
       <div className="w-full divide-y divide-gray-200">
-        <h1 className="text-2xl text-gray-700 text-center my-2">Create Task</h1>
+        <h1 className="text-2xl text-gray-700 text-center my-2">Update Task</h1>
         <form
           className="py-4 flex flex-col gap-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            props.updateTaskCB!(currentTask);
+            props.updateTaskCB(currentTask);
             props.closeCB();
           }}
         >

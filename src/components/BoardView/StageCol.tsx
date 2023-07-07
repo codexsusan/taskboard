@@ -28,18 +28,21 @@ const disableAddTask = (setAddTaskController: (value: boolean) => void) => {
   setAddTaskController(false);
 };
 
-function StageCol(props: {
-  addTaskCB: (stageId: Stage["id"], task: Task) => void;
+type Props = {
   stage: Stage;
   deleteStageCB: (id: string) => void;
   updateStageTitleCB: (id: Stage["id"], title: Stage["title"]) => void;
+  addTaskCB: (stageId: Stage["id"], task: Task) => void;
+  updateTaskCB: (task: Task) => void;
   deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
   switchStage: (
     source: Stage["id"],
     destination: Stage["id"],
     task: Task
   ) => void;
-}) {
+};
+
+function StageCol(props: Props) {
   const [title, setTitle] = React.useState(props.stage.title);
 
   const [editStageController, setEditStageController] = React.useState(false);
@@ -116,6 +119,7 @@ function StageCol(props: {
       {props.stage.tasks.map((task) => {
         return (
           <TaskBox
+          updateTaskCB={props.updateTaskCB}
             stageId={props.stage.id}
             deleteTaskCB={props.deleteTaskCB}
             key={task.id}

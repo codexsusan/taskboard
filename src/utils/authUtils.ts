@@ -2,7 +2,7 @@ import { User } from "../types/UserTypes";
 import { request } from "./apiUtils";
 
 export const createUser = async (user: User) => {
-    const response = await request("/users/register", "POST", {
+    const response = await request("/org/register", "POST", {
         userName: user.name,
         email: user.email,
         password: user.password,
@@ -10,7 +10,7 @@ export const createUser = async (user: User) => {
     return response;
 }
 
-export const checkUser = async (user: User) => {
+export const loginUser = async (user: User) => {
     const response = await request("/auth/login", "POST", {
         email: user.email,
         password: user.password
