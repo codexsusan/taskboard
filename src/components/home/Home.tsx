@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { formatDate, greetingMessage } from "../../utils/dateUtils";
 import jwt_decode from "jwt-decode";
-import { orgAllBoards, orgAllTasks } from "../../utils/orgUtils";
-import UpdatedTable from "../../common/UpdatedTable";
+import { allMembers, orgAllBoards, orgAllTasks } from "../../utils/orgUtils";
+import Members from "./Members";
 
 type analyticsData = {
   title: string;
@@ -26,19 +26,13 @@ type UserTypes = {
     }
 );
 
-export type MembersType = {
-  id: string;
-  userName: string;
-  email: string;
-  createdAt: string;
-};
-
 type State = {
   boardsCount: number;
   tasksCount: number;
+  membersCount: number;
 };
 
-function Home() {
+export default function Home() {
   const presentDay = formatDate();
   const token = localStorage.getItem("token");
   const user: UserTypes = jwt_decode(token!);
@@ -47,7 +41,16 @@ function Home() {
   const [state, setState] = useState<State>({
     boardsCount: 0,
     tasksCount: 0,
+    membersCount: 0,
   });
+
+  const updateMembersCountCB = (count: number) => {
+    setState((prevState) => ({
+      ...prevState,
+      membersCount: count,
+    }));
+  };
+
   useEffect(() => {
     orgAllBoards()
       .then((res) => {
@@ -69,6 +72,16 @@ function Home() {
       .catch((err) => {
         console.log(err);
       });
+    allMembers(1, 2)
+      .then((res) => {
+        setState((prevState) => ({
+          ...prevState,
+          membersCount: res.totalMembers,
+        }));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   const analytics: analyticsData[] = [
@@ -81,6 +94,11 @@ function Home() {
       title: "Total Boards",
       count: state.boardsCount,
       desc: "Board Count",
+    },
+    {
+      title: "Total Members",
+      count: state.membersCount,
+      desc: "Members Count",
     },
   ];
 
@@ -99,7 +117,7 @@ function Home() {
           <AnalyticsBox key={data.title} data={data} />
         ))}
       </div>
-      <MembersSection />
+      <Members />
     </div>
   );
 }
@@ -119,17 +137,3 @@ function AnalyticsBox(props: { data: analyticsData }) {
     </div>
   );
 }
-
-function MembersSection() {
-  return (
-    <div className="flex flex-col gap-y-4">
-      <div className="text-2xl text-[#0D062D] opacity-70 font-bold">
-        All Members
-      </div>
-      {/* <Table tableHead={tableHead} tableRows={tableRows} /> */}
-      <UpdatedTable />
-    </div>
-  );
-}
-
-export default Home;

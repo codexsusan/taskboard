@@ -9,47 +9,124 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
-import { MembersType } from "../components/home/Home";
+
 import React, { useEffect } from "react";
-import { allMembers } from "../utils/orgUtils";
+import { allMembers } from "../../utils/orgUtils";
 
-export default function UpdatedTable(props: {}) {
+export type MembersType = {
+  id: string;
+  userName: string;
+  email: string;
+  createdAt: string;
+};
+
+type State = {
+  membersCount: number;
+  members: MembersType[];
+  pages: number;
+  prev: boolean;
+  next: boolean;
+  currentPage: number;
+};
+
+type InitializeState = {
+  type: "INITIALIZE_STATE";
+  payload: State;
+};
+
+type HandlePrevious = {
+  type: "HANDLE_PREVIOUS";
+  payload: Partial<State>;
+};
+
+type HandleNext = {
+  type: "HANDLE_NEXT";
+  payload: Partial<State>;
+};
+
+type Action = InitializeState | HandlePrevious | HandleNext;
+
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case "INITIALIZE_STATE":
+      return action.payload;
+    case "HANDLE_PREVIOUS":
+      return { ...state, ...action.payload };
+    case "HANDLE_NEXT":
+      return { ...state, ...action.payload };
+    default:
+      return state;
+  }
+};
+
+export default function MembersTable() {
   const tableHead = ["Name", "Email", "Employed", " "];
+  const limit = 2;
 
-  type State = {
-    membersCount: number;
-    members: MembersType[];
-    pages: number;
-    prev: boolean;
-    next: boolean;
-  };
-  const [state, setState] = React.useState<State>({
+  const [state, dispatch] = React.useReducer(reducer, {
     membersCount: 0,
     members: [],
     pages: 0,
     prev: false,
-    next: true,
+    next: false,
+    currentPage: 1,
   });
 
   useEffect(() => {
-    allMembers(1, 2)
+    allMembers(1, limit)
       .then((res) => {
-        setState((prevState) => ({
-          ...prevState,
-          membersCount: res.totalMembers,
-          members: res.members.results,
-          prev: res.members.previous ? true : false,
-          next: res.members.next ? true : false,
-        }));
-        setState((prevState) => ({
-          ...prevState,
-          pages: Math.ceil(prevState.membersCount / 2),
-        }));
+        dispatch({
+          type: "INITIALIZE_STATE",
+          payload: {
+            membersCount: res.totalMembers,
+            members: res.members.results,
+            prev: res.members.previous ? true : false,
+            next: res.members.next ? true : false,
+            pages: Math.ceil(res.totalMembers / 2),
+            currentPage: 1,
+          },
+        });
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
+
+  const handlePreviousCB = () => {
+    allMembers(state.currentPage - 1, limit)
+      .then((res) => {
+        dispatch({
+          type: "HANDLE_PREVIOUS",
+          payload: {
+            members: res.members.results,
+            prev: res.members.previous ? true : false,
+            next: res.members.next ? true : false,
+            currentPage: state.currentPage - 1,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleNextCB = () => {
+    allMembers(state.currentPage + 1, 2)
+      .then((res) => {
+        dispatch({
+          type: "HANDLE_NEXT",
+          payload: {
+            members: res.members.results,
+            prev: res.members.previous ? true : false,
+            next: res.members.next ? true : false,
+            currentPage: state.currentPage + 1,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <Card className="h-full w-full">
@@ -144,10 +221,11 @@ export default function UpdatedTable(props: {}) {
       </CardBody>
       <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Page 1 of {state.pages}
+          Page {state.currentPage} of {state.pages}
         </Typography>
         <div className="flex gap-2">
           <Button
+            onClick={handlePreviousCB}
             disabled={!state.prev}
             variant="outlined"
             color="blue-gray"
@@ -156,6 +234,7 @@ export default function UpdatedTable(props: {}) {
             Previous
           </Button>
           <Button
+            onClick={handleNextCB}
             disabled={!state.next}
             variant="outlined"
             color="blue-gray"
