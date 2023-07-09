@@ -1,5 +1,10 @@
 import React, { useEffect, useReducer } from "react";
-import { Board, deleteBoard, getBoard, updateBoard } from "../../utils/boardUtils";
+import {
+  Board,
+  deleteBoard,
+  getBoard,
+  updateBoard,
+} from "../../utils/boardUtils";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createStage,
@@ -130,7 +135,7 @@ function BoardView() {
       .catch((err) => {
         console.log(err);
       });
-  }
+  };
 
   const deleteBoardCB = () => {
     deleteBoard(boardId!)
@@ -145,15 +150,23 @@ function BoardView() {
   };
 
   const createStageCB = (stage: Stage) => {
-    dispatch({
-      type: "ADD_STAGE",
-      payload: stage,
-    });
     createStage(stage, boardId!)
       .then((res) => {
-        res.success ? console.log("created") : console.log("not created");
+        res.success
+          ? dispatch({
+              type: "ADD_STAGE",
+              payload: {
+                id: res.data.id,
+                title: res.data.title,
+                description: res.data.description,
+                tasks: [],
+              },
+            })
+          : console.log("not created");
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const UpdateStageTitleCB = (id: Stage["id"], title: Stage["title"]) => {
@@ -234,7 +247,7 @@ function BoardView() {
   };
 
   return (
-    <div className="px-8 h-3/4">
+    <div className="px-8 w-full">
       <div className="flex justify-between items-center">
         <div className="flex my-5 gap-x-4 items-center">
           <div className="text-2xl font-semibold">{state.board.title}</div>

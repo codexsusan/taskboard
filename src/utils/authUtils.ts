@@ -26,3 +26,8 @@ export const verifyExistingUser = () => {
     }
     return false;
 }
+
+export const userMe = async () => {
+    const response = await request("/users/me", "GET");
+    return response;
+}

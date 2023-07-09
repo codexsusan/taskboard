@@ -8,6 +8,11 @@ export type Org = {
     confirmPassword: string;
 };
 
+export const orgMe = async () => {
+    const response = await request("/org/me", "GET");
+    return response;
+}
+
 export const createOrg = async (org: Org) => {
     const response = await request("/org/register", "POST", {
         orgName: org.orgName,
@@ -26,7 +31,20 @@ export const loginOrg = async (org: Org) => {
     return response;
 }
 
-export const allMembers = async () => {
-    const response = await request("/org/users", "GET");
+export const allMembers = async (page: number, limit: number) => {
+    const response = await request(`/org/users`, "GET", {
+        page,
+        limit
+    });
     return response;
-} 
+}
+
+export const orgAllTasks = async () => {
+    const response = await request("/org/allTasks", "GET");
+    return response;
+}
+
+export const orgAllBoards = async () => {
+    const response = await request("/org/allBoards", "GET");
+    return response;
+}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Navbar(props: { source: string }) {
   const navigate = useNavigate();
   return (
-    <div className="p-6 bg-[#030711] text-white flex justify-between flex-1 items-center">
+    <div className="p-6 h-[4rem] bg-[#030711] text-white flex justify-between flex-1 items-center">
       <div>
         <h1 className="text-xl font-semibold">TASKBOARD</h1>
       </div>

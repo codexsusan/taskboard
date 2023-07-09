@@ -1,6 +1,6 @@
 import React from "react";
 
-function Images(props: { source: String; width?: number, alt?: string }) {
+function Images(props: { source: string; width?: number; alt?: string }) {
   return (
     <div className="flex w-full justify-center">
       <img

@@ -4,9 +4,9 @@ import Sidebar from "../components/home/Sidebar";
 
 function AppContainer(props: { children: React.ReactNode }) {
   return (
-    <div className="h-screen w-screen">
+    <div className="w-full">
       <Navbar source="appcontainer" />
-      <div className="flex w-full">
+      <div className="flex w-full min-h-4/5">
         <Sidebar />
         {props.children}
       </div>
