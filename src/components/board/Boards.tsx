@@ -1,11 +1,14 @@
+import Icon from "../../common/Icon";
 import React, { useEffect, useReducer } from "react";
 import Button from "../../common/Buttons";
-import InputField from "../../common/InputField";
-import Modal from "../../common/Modal";
-import { listBoard, Board, createBoard } from "../../utils/boardUtils";
+import {  Board, createBoard, orgAllBoards } from "../../utils/boardUtils";
 import { BoardState, reducer } from "./reducer";
-import { BoardCard } from "./BoardComp";
 import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../../common/Modal";
+import { BoardPopUp } from "./BoardPopUp";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Boards() {
   const navigate = useNavigate();
@@ -26,6 +29,7 @@ function Boards() {
       .then((res) => {
         if (res.success) {
           dispatch({ type: "ADD_BOARD", payload: res.data });
+          toast.success(res.message);
           closeModalCB();
         }
       })
@@ -58,7 +62,7 @@ function Boards() {
       navigate("/board");
     }
     const fetchBoardData = async () => {
-      await listBoard().then((res) => {
+      await orgAllBoards().then((res) => {
         if (res.error) {
           return console.log(res.error);
         }
@@ -67,22 +71,28 @@ function Boards() {
     };
     fetchBoardData();
   }, [location.pathname, navigate]);
-
   return (
-    <div className="px-8 pt-4 h-auto w-full">
-      <div className="flex justify-between mb-5">
-        <div className="text-2xl font-semibold ">MY BOARDS</div>
-        <div>
+    <div className="flex flex-col gap-y-10 w-full px-[5rem] py-[2rem]">
+      <div className="flex w-full justify-between">
+        <div className="text-4xl opacity-60 text-[#0D062D] font-bold">
+          My Boards
+        </div>
+        <div className="">
           <Button
+            customClass="border"
             onClick={() => {
               openModalCB();
             }}
             title="Create"
-            theme="light"
-          />
+            theme="white"
+          >
+            <div className="flex items-center gap-x-2">
+              <Icon name="add" /> Create
+            </div>
+          </Button>
         </div>
       </div>
-      <div className="flex flex-wrap gap-6">
+      <div className="flex w-full flex-wrap gap-10">
         {state.loading && (
           <div className="text-2xl font-semibold text-center w-full">
             Loading...
@@ -108,7 +118,7 @@ function Boards() {
           })}
       </div>
       <Modal open={state.modalStatus} closeCB={() => closeModalCB()}>
-        <BoardBox
+        <BoardPopUp
           updateNewBoardCB={updateNewBoardCB}
           closeCB={closeModalCB}
           addBoardCB={addBoardCB}
@@ -121,59 +131,27 @@ function Boards() {
   );
 }
 
-export function BoardBox(props: {
-  addBoardCB?: (board: Board) => void;
-  updateBoardCB?: (board: Board) => void;
-  closeCB?: () => void;
-  newBoard: Board;
-  updateNewBoardCB?: (board: Board) => void;
-  updateNewBoardTitleCB?: (value: string) => void;
-  updateNewBoardDescriptionCB?: (value: string) => void;
-}) {
-  const [board, setBoard] = React.useState<Board>(props.newBoard);
-  const type = props.addBoardCB ? "add" : "update";
+function BoardCard(props: { id: string; title: string; description: string }) {
+  const navigate = useNavigate();
+  const navigateToBoard = () => {
+    navigate(`/board/${props.id}`);
+  };
   return (
-    <div className="w-full divide-y divide-gray-200">
-      <h1 className="text-2xl text-gray-700 text-center my-2">
-        {type === "add" ? "Create Board" : "Update Board"}
-      </h1>
-      <form
-        className="py-4 flex flex-col gap-y-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (props.addBoardCB) {
-            props.addBoardCB(board);
-          }
-          if (props.updateBoardCB) {
-            props.updateBoardCB(board);
-          }
-          props.closeCB!();
-        }}
-      >
-        <InputField
-          value={board.title}
-          onValueChange={(value) => setBoard({ ...board, title: value })}
-          label="Title"
-          type="text"
-        />
-        <InputField
-          onValueChange={(value) => setBoard({ ...board, description: value })}
-          label="Description"
-          type="text"
-          value={board.description}
-        />
-        <div className="flex items-center w-full justify-between">
-          <Button theme="dark" title="Cancel" onClick={props.closeCB} />
-          <div className="flex my-2">
-            <button
-              className="bg-slate-100 text-[#030711] hover:bg-slate-200 px-4 py-2 rounded-md "
-              type="submit"
-            >
-              Submit
-            </button>
-          </div>
+    <div
+      onClick={navigateToBoard}
+      className="w-72 flex cursor-pointer flex-col bg-[#B5B5B5]/[0.6] border rounded-xl pt-6 pb-4 px-4 gap-4 flex-initial"
+    >
+      <div className="flex text-[#0D062D]/[0.75] justify-between w-full items-start">
+        <div className=" font-semibold text-xl">{props.title}</div>
+        <Icon name="vertical-detail" />
+      </div>
+      <div className="w-full ">
+        <div className="font-normal">
+          {props.description.length > 50
+            ? props.description.slice(0, 50)
+            : props.description}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,7 @@ import { reducer, authType } from "./reducer";
 function OrgAuth(props: { authMethod: authType }) {
   const initialState: Org = {
     id: "",
-    orgName: "",
+    orgname: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -18,8 +18,8 @@ function OrgAuth(props: { authMethod: authType }) {
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
-  const changeNameCB = (orgName: Org["orgName"]) => {
-    dispatch({ type: "CHANGE_ORG_NAME", payload: orgName });
+  const changeNameCB = (orgname: Org["orgname"]) => {
+    dispatch({ type: "CHANGE_ORG_NAME", payload: orgname });
   };
 
   const changeEmailCB = (email: Org["email"]) => {
@@ -149,7 +149,7 @@ function OrgLogin(props: {
 function OrgSignup(props: {
   state: Org;
   authMethod: authType;
-  changeNameCB: (orgName: Org["orgName"]) => void;
+  changeNameCB: (orgname: Org["orgname"]) => void;
   changeEmailCB: (email: Org["email"]) => void;
   changePasswordCB: (password: Org["password"]) => void;
   changeConfirmPasswordCB: (confirmPassword: Org["confirmPassword"]) => void;
@@ -189,7 +189,7 @@ function OrgSignup(props: {
             label="Organization Name"
             type="text"
             onValueChange={props.changeNameCB}
-            value={props.state.orgName}
+            value={props.state.orgname}
             required={true}
           />
           <InputField

@@ -2,7 +2,7 @@ import { request } from "./apiUtils";
 
 export type Org = {
     id: string;
-    orgName: string;
+    orgname: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -12,16 +12,17 @@ export const orgMe = async () => {
     const response = await request("/org/me", "GET");
     return response;
 }
-
+// Done
 export const createOrg = async (org: Org) => {
     const response = await request("/org/register", "POST", {
-        orgName: org.orgName,
+        orgname: org.orgname,
         email: org.email,
         password: org.password,
     });
     return response;
 }
 
+// Done
 export const loginOrg = async (org: Org) => {
     const { email, password } = org;
     const response = await request("/org/login", "POST", {
@@ -31,20 +32,22 @@ export const loginOrg = async (org: Org) => {
     return response;
 }
 
+// Done
 export const allMembers = async (page: number, limit: number) => {
-    const response = await request(`/org/users`, "GET", {
+    const response = await request(`/user/org/all`, "GET", {
         page,
         limit
     });
     return response;
 }
 
+// Done
 export const orgAllTasks = async () => {
-    const response = await request("/org/allTasks", "GET");
+    const response = await request("/task/org/allTasks", "GET");
     return response;
 }
 
-export const orgAllBoards = async () => {
-    const response = await request("/org/allBoards", "GET");
-    return response;
-}
+// export const orgAllBoards = async () => {
+//     const response = await request("/board/org/all", "GET");
+//     return response;
+// }

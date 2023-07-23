@@ -1,4 +1,4 @@
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { TrashIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -12,10 +12,15 @@ import {
 
 import React, { useEffect } from "react";
 import { allMembers } from "../../utils/orgUtils";
+import RegisterUser from "./RegisterUser";
+import { deleteUser } from "../../utils/userUtils";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export type MembersType = {
   id: string;
-  userName: string;
+  username: string;
   email: string;
   createdAt: string;
 };
@@ -44,7 +49,22 @@ type HandleNext = {
   payload: Partial<State>;
 };
 
-type Action = InitializeState | HandlePrevious | HandleNext;
+type AddUser = {
+  type: "ADD_USER";
+  payload: MembersType;
+};
+
+type DeleteUser = {
+  type: "DELETE_USER";
+  payload: MembersType["id"];
+};
+
+type Action =
+  | InitializeState
+  | HandlePrevious
+  | HandleNext
+  | AddUser
+  | DeleteUser;
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
@@ -54,9 +74,27 @@ const reducer = (state: State, action: Action) => {
       return { ...state, ...action.payload };
     case "HANDLE_NEXT":
       return { ...state, ...action.payload };
+    case "ADD_USER":
+      return {
+        ...state,
+        members: [...state.members, action.payload],
+      };
+    case "DELETE_USER":
+      return {
+        ...state,
+        members: state.members.filter((member) => member.id !== action.payload),
+      };
     default:
       return state;
   }
+};
+
+const enableAddMember = (setAddMember: (value: boolean) => void) => {
+  setAddMember(true);
+};
+
+const disableAddMember = (setAddMember: (value: boolean) => void) => {
+  setAddMember(false);
 };
 
 export default function MembersTable() {
@@ -72,6 +110,8 @@ export default function MembersTable() {
     currentPage: 1,
   });
 
+  const [addMember, setAddMember] = React.useState(false);
+
   useEffect(() => {
     allMembers(1, limit)
       .then((res) => {
@@ -79,9 +119,9 @@ export default function MembersTable() {
           type: "INITIALIZE_STATE",
           payload: {
             membersCount: res.totalMembers,
-            members: res.members.results,
-            prev: res.members.previous ? true : false,
-            next: res.members.next ? true : false,
+            members: res.data.results,
+            prev: res.data.previous ? true : false,
+            next: res.data.next ? true : false,
             pages: Math.ceil(res.totalMembers / 2),
             currentPage: 1,
           },
@@ -98,9 +138,9 @@ export default function MembersTable() {
         dispatch({
           type: "HANDLE_PREVIOUS",
           payload: {
-            members: res.members.results,
-            prev: res.members.previous ? true : false,
-            next: res.members.next ? true : false,
+            members: res.data.results,
+            prev: res.data.previous ? true : false,
+            next: res.data.next ? true : false,
             currentPage: state.currentPage - 1,
           },
         });
@@ -116,9 +156,9 @@ export default function MembersTable() {
         dispatch({
           type: "HANDLE_NEXT",
           payload: {
-            members: res.members.results,
-            prev: res.members.previous ? true : false,
-            next: res.members.next ? true : false,
+            members: res.data.results,
+            prev: res.data.previous ? true : false,
+            next: res.data.next ? true : false,
             currentPage: state.currentPage + 1,
           },
         });
@@ -126,6 +166,25 @@ export default function MembersTable() {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleDeleteUser = (id: string) => {
+    deleteUser(id)
+      .then((res) => {
+        if (res.success) {
+          dispatch({ type: "DELETE_USER", payload: id });
+          toast.success(res.message);
+        } else {
+          toast.error(res.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const addUserCB = (userData: MembersType) => {
+    dispatch({ type: "ADD_USER", payload: userData });
   };
 
   return (
@@ -141,7 +200,12 @@ export default function MembersTable() {
             </Typography>
           </div>
           <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
-            <Button className="flex items-center gap-3" color="blue" size="sm">
+            <Button
+              onClick={() => enableAddMember(setAddMember)}
+              className="flex items-center gap-3"
+              color="blue"
+              size="sm"
+            >
               <UserPlusIcon strokeWidth={2} className="h-4 w-4" /> Add member
             </Button>
           </div>
@@ -183,7 +247,7 @@ export default function MembersTable() {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {member.userName}
+                          {member.username}
                         </Typography>
                       </div>
                     </div>
@@ -207,9 +271,15 @@ export default function MembersTable() {
                     </Typography>
                   </td>
                   <td className={classes}>
-                    <Tooltip content="Edit User">
-                      <IconButton variant="text" color="blue-gray">
-                        <PencilIcon className="h-4 w-4" />
+                    <Tooltip content="Delete User">
+                      <IconButton
+                        onClick={() => {
+                          handleDeleteUser(member.id);
+                        }}
+                        variant="text"
+                        color="blue-gray"
+                      >
+                        <TrashIcon className="h-4 w-4" />
                       </IconButton>
                     </Tooltip>
                   </td>
@@ -244,6 +314,11 @@ export default function MembersTable() {
           </Button>
         </div>
       </CardFooter>
+      <RegisterUser
+        addUserCB={addUserCB}
+        open={addMember}
+        closeCB={() => disableAddMember(setAddMember)}
+      />
     </Card>
   );
 }

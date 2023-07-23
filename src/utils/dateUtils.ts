@@ -1,6 +1,3 @@
-import { userMe } from "./authUtils";
-import { orgMe } from "./orgUtils";
-
 type Months = string[];
 type Days = string[];
 
@@ -29,11 +26,10 @@ const days: Days = [
     'Saturday'
 ];
 
-export const greetingMessage: (userType: string) => string = (userType) => {
+export const greetingMessage: () => string = () => {
     const date = new Date();
     const hour = date.getHours();
     let greeting: string;
-    let name: string = "";
     if (hour >= 0 && hour < 12) {
         greeting = 'Good Morning, ';
     } else if (hour >= 12 && hour < 18) {
@@ -41,23 +37,7 @@ export const greetingMessage: (userType: string) => string = (userType) => {
     } else {
         greeting = 'Good Evening, ';
     }
-    if (userType === "org") {
-        orgMe()
-            .then((res) => {
-                name = `${res.org.orgName} Team`;
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    } else if (userType === "user") {
-        userMe()
-            .then((res) => {
-                name = res.user.userName;
-                console.log(name);
-            })
-            .catch((err) => console.log(err));
-    }
-    return `${greeting} ${name}`;
+    return `${greeting}`;
 }
 
 

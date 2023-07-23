@@ -13,8 +13,12 @@ function Icon(props: Props) {
       return <DeleteIcon {...props} />;
     case "add":
       return <AddIcon {...props} />;
+    case "roundedadd":
+      return <RoundedAddIcon {...props} />;
     case "detail":
       return <HorizontalDetail {...props} />;
+    case "vertical-detail":
+      return <VerticalDetail {...props} />;
     case "comment":
       return <Comment {...props} />;
     case "check":
@@ -24,7 +28,7 @@ function Icon(props: Props) {
     case "home":
       return <Home {...props} />;
     case "board":
-      return <Boards {...props} />;
+      return <BoardIcon {...props} />;
     case "tasksquare":
       return <TaskSquare {...props} />;
     default:
@@ -50,6 +54,25 @@ function AddIcon(props: Props) {
         />
       </svg>
     </>
+  );
+}
+
+function RoundedAddIcon(props: Props) {
+  return (
+    <svg
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      strokeWidth={1.5}
+      viewBox="0 0 24 24"
+      className="w-6 h-6"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M13.0122 0.791504C15.8835 0.791504 17.8128 2.80709 17.8128 5.80671V12.7971C17.8128 15.7968 15.8835 17.8123 13.0122 17.8123H5.59266C2.72128 17.8123 0.791992 15.7968 0.791992 12.7971V5.80671C0.791992 2.80709 2.72128 0.791504 5.59266 0.791504H13.0122ZM13.0122 1.979H5.59266C3.39816 1.979 1.97949 3.4808 1.97949 5.80671V12.7971C1.97949 15.123 3.39816 16.6248 5.59266 16.6248H13.0122C15.2075 16.6248 16.6253 15.123 16.6253 12.7971V5.80671C16.6253 3.4808 15.2075 1.979 13.0122 1.979ZM9.30241 5.80062C9.63016 5.80062 9.89616 6.06662 9.89616 6.39437V8.70025L12.2051 8.70041C12.5328 8.70041 12.7988 8.96641 12.7988 9.29416C12.7988 9.62191 12.5328 9.88791 12.2051 9.88791L9.89616 9.88775V12.1949C9.89616 12.5227 9.63016 12.7887 9.30241 12.7887C8.97466 12.7887 8.70866 12.5227 8.70866 12.1949V9.88775L6.39976 9.88791C6.07122 9.88791 5.80601 9.62191 5.80601 9.29416C5.80601 8.96641 6.07122 8.70041 6.39976 8.70041L8.70866 8.70025V6.39437C8.70866 6.06662 8.97466 5.80062 9.30241 5.80062Z"
+        fill="#787486"
+      />
+    </svg>
   );
 }
 
@@ -103,6 +126,25 @@ function HorizontalDetail(props: Props) {
       viewBox="0 0 24 24"
       strokeWidth="1.5"
       stroke={props.stroke ? props.stroke : "currentColor"}
+      className="w-6 h-6"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
+      />
+    </svg>
+  );
+}
+
+function VerticalDetail(props: Props) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={1.5}
+      stroke="currentColor"
       className="w-6 h-6"
     >
       <path
@@ -200,7 +242,7 @@ function Home(props: Props) {
   );
 }
 
-function Boards(props: Props) {
+function BoardIcon(props: Props) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

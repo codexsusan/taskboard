@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "../common/Navbar";
 import Sidebar from "../components/home/Sidebar";
+import { ToastContainer } from "react-toastify";
 
 function AppContainer(props: { children: React.ReactNode }) {
   return (
@@ -10,6 +11,7 @@ function AppContainer(props: { children: React.ReactNode }) {
         <Sidebar />
         {props.children}
       </div>
+      <ToastContainer position="bottom-right" autoClose={2000} />
     </div>
   );
 }

@@ -4,15 +4,20 @@ import Home from "../components/home/Home";
 import AuthContainer from "../hoc/AuthContainer";
 import Auth from "../components/auth/user/UserAuth";
 import AppContainer from "../hoc/AppContainer";
-import Board from "../components/board/Boards";
+// import Board from "../components/board/Boards";
 import Errorpage from "../components/Errorpage";
 import BoardView from "../components/BoardView/BoardView";
 import OrgAuth from "../components/auth/org/OrgAuth";
+import Boards from "../components/board/Boards";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <AppContainer>
+        <Home />
+      </AppContainer>
+    ),
   },
   {
     path: "/about",
@@ -62,7 +67,7 @@ export const router = createBrowserRouter([
     path: "/board",
     element: (
       <AppContainer>
-        <Board />
+        <Boards />
       </AppContainer>
     ),
   },

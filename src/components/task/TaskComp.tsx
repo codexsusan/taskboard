@@ -12,6 +12,8 @@ type Props = {
   addTaskCB: (stageId: Stage["id"], task: Task) => void;
 };
 
+// TODO: Refactor this component to use add task and update task in the same component as board modal
+
 export function AddTaskModal(props: Props) {
   const [task, setTask] = React.useState<Task>({
     id: "",

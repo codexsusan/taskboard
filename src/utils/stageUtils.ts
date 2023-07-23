@@ -4,29 +4,30 @@ import { Task } from "./taskUtils";
 export type Stage = {
     id: string;
     title: string;
-    description: string;
+    // description: string;
     task?: Task[]
 };
 
+// Done
 export const getAllStage = async (boardId: Board['id']) => {
-    const response = await request(`/stage/${boardId}`, "GET");
+    const response = await request(`/stage/board/${boardId}/stages/all`, "GET");
     return response;
 }
 
+// Done
 export const createStage = async (stage: Stage, boardId: Board['id']) => {
-    const response = await request(`/stage/${boardId}/create`, "POST", {
+    const response = await request(`/stage/board/${boardId}/create`, "POST", {
         title: stage.title,
-        description: stage.description
     });
     return response;
 }
 
 export const deleteStage = async (id: Stage['id'], boardId: Board['id']) => {
-    const response = await request(`/stage/${boardId}/delete/${id}`, "DELETE");
+    const response = await request(`/stage/board/${boardId}/delete/${id}`, "DELETE");
     return response;
 }
 
 export const updateStageTitle = async (id: string, title: string, boardId: Board['id']) => {
-    const response = await request(`/stage/${boardId}/update/${id}`, "PATCH", { title });
+    const response = await request(`/stage/board/${boardId}/update/${id}`, "PATCH", { title });
     return response;
 }

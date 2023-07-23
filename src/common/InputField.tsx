@@ -9,7 +9,7 @@ type Props = {
 
 function InputField(props: Props) {
   return (
-    <div>
+    <div className="w-full">
       {props.label && (
         <label htmlFor={props.label} className="block mb-1">
           {props.label}

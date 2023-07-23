@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { formatDate, greetingMessage } from "../../utils/dateUtils";
 import jwt_decode from "jwt-decode";
-import { allMembers, orgAllBoards, orgAllTasks } from "../../utils/orgUtils";
+import { allMembers, orgAllTasks } from "../../utils/orgUtils";
 import Members from "./Members";
+import { orgAllBoards } from "../../utils/boardUtils";
+
 
 type analyticsData = {
   title: string;
@@ -34,22 +36,15 @@ type State = {
 
 export default function Home() {
   const presentDay = formatDate();
-  const token = localStorage.getItem("token");
-  const user: UserTypes = jwt_decode(token!);
-  const userType = user.userType;
-  const greetings = greetingMessage(userType);
+  // const token = localStorage.getItem("token");
+  // const user: UserTypes = jwt_decode(token!);
+  // const userType = user.userType;
+  const greetings = greetingMessage();
   const [state, setState] = useState<State>({
     boardsCount: 0,
     tasksCount: 0,
     membersCount: 0,
   });
-
-  const updateMembersCountCB = (count: number) => {
-    setState((prevState) => ({
-      ...prevState,
-      membersCount: count,
-    }));
-  };
 
   useEffect(() => {
     orgAllBoards()
@@ -117,6 +112,7 @@ export default function Home() {
           <AnalyticsBox key={data.title} data={data} />
         ))}
       </div>
+      {/* <Members /> */}
       <Members />
     </div>
   );

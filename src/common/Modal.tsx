@@ -8,7 +8,7 @@ export default function Modal(props: {
 }) {
   const { open, closeCB, children } = props;
   return (
-    <Transition.Root   show={open} as={Fragment}>
+    <Transition.Root show={open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeCB}>
         <Transition.Child
           as={Fragment}

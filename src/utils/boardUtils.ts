@@ -18,7 +18,7 @@ export const createBoard = async (board: Board) => {
 
 // Done
 export const updateBoard = async (board: Board) => {
-    const response = request(`/board/${board.id}`, "PATCH", {
+    const response = request(`/board/update/${board.id}`, "PATCH", {
         title: board.title,
         description: board.description
     });
@@ -26,17 +26,30 @@ export const updateBoard = async (board: Board) => {
 }
 
 // Done
-export const listBoard = async () => {
-    const response = request("/board/list", "GET");
+export const orgAllBoards = async () => {
+    const response = request("/board/org/all", "GET");
     return response;
 }
 
-
+// Done
 export const getBoard = async (id: string) => {
-    const response = request(`/board/${id}`, "GET");
+    const response = request(`/board/view/${id}`, "GET");
     return response;
 }
 
+export const addMember = async (boardId: string, email: string) => {
+    const response = request(`/board/${boardId}/add-member`, "POST", {
+        email: email
+    });
+    return response;
+}
+
+export const removeMember = async (boardId: string, memberId: string) => {
+    const response = request(`/board/${boardId}/remove-member/${memberId}`, "DELETE");
+    return response;
+}
+
+// Done
 export const deleteBoard = async (id: string) => {
     const response = request(`/board/${id}`, "DELETE");
     return response;

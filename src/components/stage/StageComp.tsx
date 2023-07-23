@@ -26,7 +26,6 @@ export function StageCreateModal(props: {
   const [stage, setStage] = React.useState<Stage>({
     id: "",
     title: "",
-    description: "",
     tasks: [],
   });
 
@@ -34,13 +33,6 @@ export function StageCreateModal(props: {
     setStage({
       ...stage,
       title: value,
-    });
-  };
-
-  const updateDescriptionCB = (value: string) => {
-    setStage({
-      ...stage,
-      description: value,
     });
   };
 
@@ -61,12 +53,12 @@ export function StageCreateModal(props: {
           label="Title"
           type="text"
         />
-        <InputField
+        {/* <InputField
           onValueChange={updateDescriptionCB}
           label="Description"
           type="text"
           value={stage.description}
-        />
+        /> */}
         <div className="flex items-center w-full justify-between">
           <Button theme="dark" title="Cancel" onClick={props.closeCB} />
           <div className="flex my-2">

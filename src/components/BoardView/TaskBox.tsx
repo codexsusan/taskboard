@@ -3,6 +3,7 @@ import { Task } from "../../utils/taskUtils";
 import DropdownModal from "../../common/DropdownModal";
 import { UpdateTaskModal } from "../task/TaskComp";
 import { Stage } from "./reducer";
+import AssignTaskModal from "./AssignTaskModal";
 
 const openTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(true);
@@ -12,6 +13,18 @@ const closeTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(false);
 };
 
+const openAssignTaskModalCB = (
+  setAssignTaskModal: (value: boolean) => void
+) => {
+  setAssignTaskModal(true);
+};
+
+const closeAssignTaskModalCB = (
+  setAssignTaskModal: (value: boolean) => void
+) => {
+  setAssignTaskModal(false);
+};
+
 function TaskBox(props: {
   task: Task;
   stageId: Stage["id"];
@@ -19,9 +32,11 @@ function TaskBox(props: {
   deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
 }) {
   const [taskModal, setTaskModal] = React.useState(false);
+  const [assignTaskModal, setAssignTaskModal] = React.useState(false);
 
   function handleOnDrag(e: React.DragEvent, data: Task) {
     e.dataTransfer.setData("task", JSON.stringify(data));
+    console.log(data);
   }
 
   return (
@@ -40,6 +55,9 @@ function TaskBox(props: {
             stageId={props.stageId}
             task={props.task}
             openTaskModalCB={() => openTaskCB(setTaskModal)}
+            openAssignTaskModalCB={() =>
+              openAssignTaskModalCB(setAssignTaskModal)
+            }
             deleteTaskCB={props.deleteTaskCB}
           />
         </div>
@@ -57,6 +75,10 @@ function TaskBox(props: {
         open={taskModal}
         closeCB={() => closeTaskCB(setTaskModal)}
         updateTaskCB={props.updateTaskCB}
+      />
+      <AssignTaskModal
+        open={assignTaskModal}
+        closeCB={() => closeAssignTaskModalCB(setAssignTaskModal)}
       />
     </div>
   );

@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer } from "react";
+import React, { Suspense, useEffect, useReducer } from "react";
 import {
   Board,
   deleteBoard,
   getBoard,
   updateBoard,
 } from "../../utils/boardUtils";
+import { UserPlusIcon } from "@heroicons/react/24/solid";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createStage,
@@ -17,30 +18,18 @@ import Button from "../../common/Buttons";
 import Divider from "../../common/Divider";
 import StageCol from "./StageCol";
 import { Stage, reducer } from "./reducer";
-import { AddStage } from "../stage/StageComp";
 import {
   Task,
   createTask,
   deleteTask,
   updateTask,
+  updateTaskStage,
 } from "../../utils/taskUtils";
 import { DeleteModal, UpdateBoard } from "../board/BoardComp";
-
-// const openStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
-//   setCreateStageModal(true);
-// };
-
-// const closeStageModalCB = (setCreateStageModal: (value: boolean) => void) => {
-//   setCreateStageModal(false);
-// };
-
-// const enableDeleteBoard = (setDeleteBoardModal: (value: boolean) => void) => {
-//   setDeleteBoardModal(true);
-// };
-
-// const disableDeleteBoard = (setDeleteBoardModal: (value: boolean) => void) => {
-//   setDeleteBoardModal(false);
-// };
+import { AddStage } from "../stage/StageComp";
+// import AddMemberModal from "./AddMemberModal";
+// const OtherComponent = React.lazy(() => import('./OtherComponent'));
+const AddMemberModal = React.lazy(() => import("./AddMemberModal"));
 
 const enableUpdateBoard = (
   modalStatus: ModalState,
@@ -84,19 +73,36 @@ const disableCreateStage = (
   setModalStatus({ ...modalStatus, createStage: false });
 };
 
+const enableAddMember = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, addMember: true });
+};
+
+const disableAddMember = (
+  modalStatus: ModalState,
+  setModalStatus: (value: ModalState) => void
+) => {
+  setModalStatus({ ...modalStatus, addMember: false });
+};
+
 type ModalState = {
   updateBoard: boolean;
   deleteBoard: boolean;
   createStage: boolean;
+  addMember: boolean;
 };
 
 function BoardView() {
   const { boardId } = useParams();
   const navigate = useNavigate();
+
   const [modalStatus, setModalStatus] = React.useState<ModalState>({
     updateBoard: false,
     deleteBoard: false,
     createStage: false,
+    addMember: false,
   });
 
   const [state, dispatch] = useReducer(reducer, {
@@ -146,7 +152,10 @@ function BoardView() {
           alert("Board not deleted");
         }
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
+    disableDeleteBoard(modalStatus, setModalStatus);
   };
 
   const createStageCB = (stage: Stage) => {
@@ -158,7 +167,6 @@ function BoardView() {
               payload: {
                 id: res.data.id,
                 title: res.data.title,
-                description: res.data.description,
                 tasks: [],
               },
             })
@@ -199,7 +207,7 @@ function BoardView() {
   };
 
   const addTaskCB = (stageId: Stage["id"], task: Task) => {
-    createTask(stageId, task)
+    createTask(boardId!, stageId, task)
       .then((res) => {
         if (res.success) {
           dispatch({
@@ -216,7 +224,7 @@ function BoardView() {
 
   const updateTaskCB = (task: Task) => {
     dispatch({ type: "UPDATE_TASK", payload: task });
-    updateTask(task)
+    updateTask(boardId!, task)
       .then((res) => {
         console.log(res);
       })
@@ -226,7 +234,7 @@ function BoardView() {
   };
 
   const deleteTaskCB = (stageId: Stage["id"], taskId: Task["id"]) => {
-    deleteTask(stageId, taskId)
+    deleteTask(boardId!, stageId, taskId)
       .then((res) => {
         if (res.success) {
           dispatch({ type: "DELETE_TASK", payload: { stageId, taskId } });
@@ -242,8 +250,21 @@ function BoardView() {
     destination: Stage["id"],
     task: Task
   ) => {
-    addTaskCB(destination, task);
-    deleteTaskCB(source, task.id);
+    updateTaskStage(boardId!, task.id, source, destination)
+      .then((res) => {
+        dispatch({
+          type: "SWITCH_STAGE",
+          payload: {
+            source,
+            destination,
+            task: {
+              ...task,
+              stageId: destination,
+            },
+          },
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -259,6 +280,16 @@ function BoardView() {
             name="delete"
             onClick={() => enableDeleteBoard(modalStatus, setModalStatus)}
           />
+          <Button
+            onClick={() => {
+              enableAddMember(modalStatus, setModalStatus);
+            }}
+            theme="light"
+          >
+            <div className="flex gap-x-4 items-center ">
+              <UserPlusIcon className="h-5 w-5" /> Assign Member
+            </div>
+          </Button>
         </div>
         <div>
           <Button
@@ -271,12 +302,13 @@ function BoardView() {
         </div>
       </div>
       <Divider />
-      <div className="flex gap-x-4 h-full">
+      <div className="flex w-full gap-x-4 h-full">
         {state.board.stageOrder &&
           state.board.stageOrder.map((stage) => {
             const stageData = state.stage.find((s) => s.id === stage);
             return stageData ? (
               <StageCol
+                stageCount={state.stage.length}
                 switchStage={switchStage}
                 deleteTaskCB={deleteTaskCB}
                 addTaskCB={addTaskCB}
@@ -301,14 +333,21 @@ function BoardView() {
         closeCB={() => disableUpdateBoard(modalStatus, setModalStatus)}
         boardData={state.board}
         updateBoardCB={updateBoardCB}
-        // updateNewBoardTitleCB={updateBoardTitleCB}
-        // updateNewBoardDescriptionCB={updateBoardDescriptionCB}
       />
       <DeleteModal
         deleteBoardCB={deleteBoardCB}
         open={modalStatus.deleteBoard}
         closeCB={() => disableDeleteBoard(modalStatus, setModalStatus)}
       />
+      <Suspense fallback={<div>Loading...</div>}>
+        <AddMemberModal
+          boardId={boardId!}
+          open={modalStatus.addMember}
+          closeCB={() => {
+            disableAddMember(modalStatus, setModalStatus);
+          }}
+        />
+      </Suspense>
     </div>
   );
 }

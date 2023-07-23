@@ -4,7 +4,6 @@ import { Task } from "../../utils/taskUtils";
 export type Stage = {
     id: string;
     title: string;
-    description: string;
     tasks: Task[];
 };
 
@@ -67,6 +66,15 @@ type UpdateTask = {
     payload: Task;
 }
 
+type SwitchStage = {
+    type: "SWITCH_STAGE";
+    payload: {
+        source: Stage['id'];
+        destination: Stage['id'];
+        task: Task;
+    }
+}
+
 
 export type Action =
     | InitializeBoard
@@ -77,7 +85,9 @@ export type Action =
     | UpdateStageTitle
     | AddTask
     | DeleteTask
-    | UpdateTask;
+    | UpdateTask
+    | SwitchStage;
+
 export const reducer = (state: State, action: Action) => {
     switch (action.type) {
         case "INITIALIZE_BOARD":
@@ -166,6 +176,25 @@ export const reducer = (state: State, action: Action) => {
                         return {
                             ...stage,
                             tasks: stage.tasks.filter((task) => task.id !== action.payload.taskId),
+                        }
+                    }
+                    return stage;
+                })
+            }
+        case "SWITCH_STAGE":
+            return {
+                ...state,
+                stage: state.stage.map((stage) => {
+                    if (stage.id === action.payload.source) {
+                        return {
+                            ...stage,
+                            tasks: stage.tasks.filter((task) => task.id !== action.payload.task.id),
+                        }
+                    }
+                    if (stage.id === action.payload.destination) {
+                        return {
+                            ...stage,
+                            tasks: [...stage.tasks, action.payload.task],
                         }
                     }
                     return stage;

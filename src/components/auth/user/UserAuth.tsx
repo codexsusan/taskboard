@@ -4,7 +4,7 @@ import InputField from "../../../common/InputField";
 import { useNavigate } from "react-router-dom";
 
 import { User, authType } from "../../../types/UserTypes";
-import { loginUser, createUser } from "../../../utils/authUtils";
+import { loginUser, createUser } from "../../../utils/userUtils";
 import Images from "../../../common/Images";
 import logo from "../../../assets/Logo.png";
 
@@ -103,7 +103,7 @@ function Login(props: {
     try {
       const userData = await loginUser(user);
       if (userData.success) {
-        navigate("/");
+        navigate("/home");
         localStorage.setItem("token", userData.authToken);
       } else {
         console.log(userData);
@@ -184,14 +184,14 @@ function Signup(props: {
   const handleSignUp = async (user: User) => {
     console.log(user);
     try {
-      createUser(user)
-        .then((data) => {
-          if (data.success) {
-            navigate("/board");
-            localStorage.setItem("token", data.authToken);
-          }
-        })
-        .catch((err) => console.log(err));
+      // createUser(user)
+      //   .then((data) => {
+      //     if (data.success) {
+      //       navigate("/board");
+      //       localStorage.setItem("token", data.authToken);
+      //     }
+      //   })
+      //   .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
     }

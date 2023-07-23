@@ -2,7 +2,7 @@ import { Org } from "../../../utils/orgUtils";
 
 export type authType = "login" | "register";
 
-type ChangeOrgName = { type: "CHANGE_ORG_NAME"; payload: Org["orgName"] };
+type ChangeOrgName = { type: "CHANGE_ORG_NAME"; payload: Org["orgname"] };
 type ChnageEmail = { type: "CHANGE_EMAIL"; payload: Org["email"] };
 type ChangePassword = { type: "CHANGE_PASSWORD"; payload: Org["password"] };
 type ChangeConfirmPassword = {
@@ -24,7 +24,7 @@ type Action =
 export const reducer = (state: Org, action: Action) => {
     switch (action.type) {
         case "CHANGE_ORG_NAME":
-            return { ...state, orgName: action.payload };
+            return { ...state, orgname: action.payload };
         case "CHANGE_EMAIL":
             return { ...state, email: action.payload };
         case "CHANGE_PASSWORD":
@@ -34,7 +34,7 @@ export const reducer = (state: Org, action: Action) => {
         case "CLEAR_VALUES":
             return {
                 id: "",
-                orgName: "",
+                orgname: "",
                 email: "",
                 password: "",
                 confirmPassword: "",
@@ -43,7 +43,7 @@ export const reducer = (state: Org, action: Action) => {
             return {
                 ...state,
                 id: action.payload.id,
-                orgName: action.payload.orgName,
+                orgname: action.payload.orgname,
                 email: action.payload.email,
             }
         default:

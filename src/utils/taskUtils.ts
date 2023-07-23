@@ -1,4 +1,5 @@
 import { request } from "./apiUtils"
+import { Board } from "./boardUtils";
 import { Stage } from "./stageUtils";
 
 export type Task = {
@@ -9,13 +10,14 @@ export type Task = {
     stageId?: string
 }
 
-export const getAllTask = async (stageId: Task['id']) => {
-    const response = await request(`/task/${stageId}/list`, "GET");
+export const getAllTask = async (boardId: Board['id'], stageId: Task['id']) => {
+    const response = await request(`/task/board/${boardId}/stage/${stageId}/all`, "GET");
     return response;
 }
 
-export const createTask = async (stageId: Stage['id'], task: Task) => {
-    const response = await request(`/task/${stageId}/create`, "POST", {
+// Done
+export const createTask = async (boardId: Board['id'], stageId: Stage['id'], task: Task) => {
+    const response = await request(`/task/board/${boardId}/stage/${stageId}/create`, "POST", {
         id: task.id,
         title: task.title,
         description: task.description,
@@ -24,17 +26,23 @@ export const createTask = async (stageId: Stage['id'], task: Task) => {
     return response;
 }
 
-export const getTask = async (taskId: Task['id'], stageId: Stage['id']) => {
-    const response = await request(`/task/${stageId}/list/${taskId}`, "GET");
+export const getTask = async (boardId: Board['id'], taskId: Task['id'], stageId: Stage['id']) => {
+    const response = await request(`/task/board/${boardId}/stage/${stageId}/view/${taskId}`, "GET");
     return response;
 }
 
-export const deleteTask = async (stageId: Stage['id'], taskId: Task['id']) => {
-    const response = await request(`/task/${stageId}/delete/${taskId}`, "DELETE");
+export const deleteTask = async (boardId: Board['id'], stageId: Stage['id'], taskId: Task['id']) => {
+    const response = await request(`/task/board/${boardId}/stage/${stageId}/delete/${taskId}`, "DELETE");
     return response;
 }
 
-export const updateTask = async (task: Task) => {
-    const response = await request(`/task/${task.stageId!}/update/${task.id}`, "PATCH", task);
+export const updateTask = async (boardId: Board['id'], task: Task) => {
+    const response = await request(`/task/board/${boardId}/stage/${task.stageId}/update/${task.id}`, "PATCH", task);
     return response;
+}
+
+export const updateTaskStage = async (boardId: Board['id'], taskId: Task['id'], srcStageId: Stage['id'], destStageId: Stage['id']) => {
+    const response = await request(`/task/board/${boardId}/${taskId}/${srcStageId}/${destStageId}`, "GET");
+    return response;
+    // /board/:boardId/:taskId/:srcStageId/:destStageId
 }

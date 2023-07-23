@@ -9,7 +9,6 @@ import { AddTaskModal } from "../task/TaskComp";
 type Stage = {
   id: string;
   title: string;
-  description: string;
   tasks: Task[];
 };
 
@@ -30,6 +29,7 @@ const disableAddTask = (setAddTaskController: (value: boolean) => void) => {
 
 type Props = {
   stage: Stage;
+  stageCount: number;
   deleteStageCB: (id: string) => void;
   updateStageTitleCB: (id: Stage["id"], title: Stage["title"]) => void;
   addTaskCB: (stageId: Stage["id"], task: Task) => void;
@@ -56,13 +56,18 @@ function StageCol(props: Props) {
     const data = JSON.parse(e.dataTransfer.getData("task"));
     if (data.stageId === props.stage.id) return;
     props.switchStage(data.stageId, props.stage.id, data);
+    
   }
 
   return (
     <div
       onDrop={(e) => handleOnDrop(e)}
       onDragOver={handleDragOver}
-      className="bg-[#F5F5F5] mt-5 px-4 py-2 rounded w-80 h-5/6"
+      className={`bg-[#F5F5F5] mt-5 px-4 py-2 rounded h-5/6 ${
+        props.stageCount < 6 && props.stageCount !== 1 && props.stageCount !== 2
+          ? `w-1/${props.stageCount}`
+          : "w-1/3"
+      } `}
     >
       <div className="flex mb-2 items-center justify-between">
         {!editStageController && (
@@ -119,7 +124,7 @@ function StageCol(props: Props) {
       {props.stage.tasks.map((task) => {
         return (
           <TaskBox
-          updateTaskCB={props.updateTaskCB}
+            updateTaskCB={props.updateTaskCB}
             stageId={props.stage.id}
             deleteTaskCB={props.deleteTaskCB}
             key={task.id}

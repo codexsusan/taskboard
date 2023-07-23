@@ -2,10 +2,11 @@ import React from "react";
 
 type Props = {
   type?: ButtonType;
-  title: string;
+  title?: string;
   onClick?: () => void;
   theme: string;
   customClass?: string;
+  children?: React.ReactNode;
 };
 
 type ButtonType = "submit" | "button";
@@ -34,7 +35,7 @@ function DarkButton(props: Props) {
           props.onClick!();
         }}
       >
-        {props.title}
+        {props.children ? props.children : props.title}
       </button>
     </>
   );
@@ -51,7 +52,7 @@ function LightButton(props: Props) {
           props.onClick!();
         }}
       >
-        {props.title}
+        {props.children ? props.children : props.title}
       </button>
     </>
   );
@@ -67,7 +68,7 @@ function WhiteButton(props: Props) {
           props.onClick!();
         }}
       >
-        {props.title}
+        {props.children ? props.children : props.title}
       </button>
     </>
   );
