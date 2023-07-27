@@ -40,9 +40,12 @@ export const updateTask = async (boardId: Board['id'], task: Task) => {
     const response = await request(`/task/board/${boardId}/stage/${task.stageId}/update/${task.id}`, "PATCH", task);
     return response;
 }
+export const allAssigned = async (boardId: Board['id'], taskId: Task['id']) => {
+    const response = await request(`/task/board/${boardId}/${taskId}/allAssigned`, "GET");
+    return response;
+}
 
 export const updateTaskStage = async (boardId: Board['id'], taskId: Task['id'], srcStageId: Stage['id'], destStageId: Stage['id']) => {
     const response = await request(`/task/board/${boardId}/${taskId}/${srcStageId}/${destStageId}`, "GET");
     return response;
-    // /board/:boardId/:taskId/:srcStageId/:destStageId
 }

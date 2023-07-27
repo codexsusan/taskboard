@@ -56,7 +56,6 @@ function StageCol(props: Props) {
     const data = JSON.parse(e.dataTransfer.getData("task"));
     if (data.stageId === props.stage.id) return;
     props.switchStage(data.stageId, props.stage.id, data);
-    
   }
 
   return (

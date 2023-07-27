@@ -19,6 +19,8 @@ function Button(props: Props) {
       return <LightButton {...props} />;
     case "white":
       return <WhiteButton {...props} />;
+    case "blue":
+      return <BlueButton {...props} />;
     default:
       return null;
   }
@@ -63,6 +65,22 @@ function WhiteButton(props: Props) {
       <button
         type={props.type}
         className={`bg-white text-[#030711] hover:bg-slate-50 px-4 py-2.5 rounded-md ${props.customClass}`}
+        onClick={(e) => {
+          e.preventDefault();
+          props.onClick!();
+        }}
+      >
+        {props.children ? props.children : props.title}
+      </button>
+    </>
+  );
+}
+function BlueButton(props: Props) {
+  return (
+    <>
+      <button
+        type={props.type}
+        className={`bg-blue-400 text-[#030711] hover:bg-blue-500 px-4 py-2.5 rounded-md ${props.customClass}`}
         onClick={(e) => {
           e.preventDefault();
           props.onClick!();

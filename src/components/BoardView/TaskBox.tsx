@@ -77,6 +77,7 @@ function TaskBox(props: {
         updateTaskCB={props.updateTaskCB}
       />
       <AssignTaskModal
+      task={props.task}
         open={assignTaskModal}
         closeCB={() => closeAssignTaskModalCB(setAssignTaskModal)}
       />

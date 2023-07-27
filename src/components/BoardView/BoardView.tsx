@@ -27,8 +27,9 @@ import {
 } from "../../utils/taskUtils";
 import { DeleteModal, UpdateBoard } from "../board/BoardComp";
 import { AddStage } from "../stage/StageComp";
-// import AddMemberModal from "./AddMemberModal";
-// const OtherComponent = React.lazy(() => import('./OtherComponent'));
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AddMemberModal = React.lazy(() => import("./AddMemberModal"));
 
 const enableUpdateBoard = (
@@ -136,7 +137,12 @@ function BoardView() {
     dispatch({ type: "UPDATE_BOARD", payload: board });
     updateBoard(board)
       .then((res) => {
-        console.log(res);
+        if (res.success) {
+          toast.success(res.message);
+        } else {
+          toast.error(res.message);
+        }
+        // console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -148,8 +154,9 @@ function BoardView() {
       .then((res) => {
         if (res.success) {
           navigate("/board");
+          toast.success(res.message);
         } else {
-          alert("Board not deleted");
+          toast.error(res.message);
         }
       })
       .catch((err) => {

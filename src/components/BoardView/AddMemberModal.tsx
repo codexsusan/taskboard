@@ -9,7 +9,7 @@ import { allBoardMembers, allOrgUsers } from "../../utils/userUtils";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-type MemberType = {
+export type MemberType = {
   id: string;
   username: string;
   email: string;
@@ -23,8 +23,6 @@ function AddMemberModal(props: {
 }) {
   const [email, setEmail] = React.useState<string>("");
   const [currentMembers, setCurrentMembers] = React.useState<MemberType[]>([]);
-  // const [orgMembers, setOrgMembers] = React.useState<MemberType[]>([]);
-  // const [members, setMembers] = React.useState<MemberType[]>([]);
 
   useEffect(() => {
     allBoardMembers(props.boardId)
@@ -34,13 +32,6 @@ function AddMemberModal(props: {
       .catch((err) => {
         console.log(err);
       });
-    // allOrgUsers()
-    //   .then((res) => {
-    //     setOrgMembers(res.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   }, [props.boardId]);
 
   const handleAddMember: () => void = () => {
