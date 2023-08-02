@@ -4,12 +4,13 @@ type Props = {
   type?: ButtonType;
   title?: string;
   onClick?: () => void;
-  theme: string;
+  theme: themeType;
   customClass?: string;
   children?: React.ReactNode;
 };
 
 type ButtonType = "submit" | "button";
+type themeType = "dark" | "light" | "white" | "blue";
 
 function Button(props: Props) {
   switch (props.theme) {

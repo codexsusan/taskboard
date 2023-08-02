@@ -4,6 +4,8 @@ import DropdownModal from "../../common/DropdownModal";
 import { UpdateTaskModal } from "../task/TaskComp";
 import { Stage } from "./reducer";
 import AssignTaskModal from "./AssignTaskModal";
+import SideOvers from "../../common/SideOvers";
+import SideOversContent from "../../common/SideOversContent";
 
 const openTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(true);
@@ -33,10 +35,15 @@ function TaskBox(props: {
 }) {
   const [taskModal, setTaskModal] = React.useState(false);
   const [assignTaskModal, setAssignTaskModal] = React.useState(false);
+  const [sideOver, setSideOver] = React.useState(false);
+
+  const closeSideOver: () => void = () => {
+    setSideOver(false);
+  };
 
   function handleOnDrag(e: React.DragEvent, data: Task) {
     e.dataTransfer.setData("task", JSON.stringify(data));
-    console.log(data);
+    // console.log(data);
   }
 
   return (
@@ -44,6 +51,9 @@ function TaskBox(props: {
       draggable
       onDragStart={(e) => handleOnDrag(e, props.task)}
       className="bg-[#DBDBDB] rounded my-2 p-3"
+      onClick={() => {
+        setSideOver(true);
+      }}
     >
       <div className="">
         <div className="flex items-center justify-between">
@@ -77,10 +87,13 @@ function TaskBox(props: {
         updateTaskCB={props.updateTaskCB}
       />
       <AssignTaskModal
-      task={props.task}
+        task={props.task}
         open={assignTaskModal}
         closeCB={() => closeAssignTaskModalCB(setAssignTaskModal)}
       />
+      <SideOvers open={sideOver} closeCB={closeSideOver}>
+        <SideOversContent updateTaskCB={props.updateTaskCB} stageId={props.stageId} deleteTaskCB={props.deleteTaskCB} task={props.task} />
+      </SideOvers>
     </div>
   );
 }

@@ -12,21 +12,21 @@ type analyticsData = {
   desc: string;
 };
 
-type UserTypes = {
-  userType: string;
-  iat: number;
-} & (
-  | {
-      user: {
-        id: string;
-      };
-    }
-  | {
-      org: {
-        id: string;
-      };
-    }
-);
+// type UserTypes = {
+//   userType: string;
+//   iat: number;
+// } & (
+//   | {
+//       user: {
+//         id: string;
+//       };
+//     }
+//   | {
+//       org: {
+//         id: string;
+//       };
+//     }
+// );
 
 type State = {
   boardsCount: number;
@@ -49,9 +49,10 @@ export default function Home() {
   useEffect(() => {
     orgAllBoards()
       .then((res) => {
+
         setState((prevState) => ({
           ...prevState,
-          boardsCount: res.totalBoards,
+          boardsCount: res.boardCount,
         }));
       })
       .catch((err) => {
@@ -112,8 +113,8 @@ export default function Home() {
           <AnalyticsBox key={data.title} data={data} />
         ))}
       </div>
-      {/* <Members /> */}
       <Members />
+      {/* <Members /> */}
     </div>
   );
 }

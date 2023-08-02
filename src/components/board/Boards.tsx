@@ -1,7 +1,7 @@
 import Icon from "../../common/Icon";
 import React, { useEffect, useReducer } from "react";
 import Button from "../../common/Buttons";
-import {  Board, createBoard, orgAllBoards } from "../../utils/boardUtils";
+import { Board, createBoard, orgAllBoards } from "../../utils/boardUtils";
 import { BoardState, reducer } from "./reducer";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../common/Modal";
@@ -66,7 +66,11 @@ function Boards() {
         if (res.error) {
           return console.log(res.error);
         }
-        dispatch({ type: "INITIALIZE_STATE", data: res.data });
+        if (res.boardCount !== 0) {
+          dispatch({ type: "INITIALIZE_STATE", data: res.data });
+        } else {
+          dispatch({ type: "INITIALIZE_STATE", data: [] });
+        }
       });
     };
     fetchBoardData();
