@@ -1,5 +1,5 @@
 import React from "react";
-import { Task } from "../../utils/taskUtils";
+import { Task, allAssigned } from "../../utils/taskUtils";
 import { IconButton } from "../../common/IconButton";
 import Divider from "../../common/Divider";
 import TaskBox from "./TaskBox";
@@ -45,8 +45,12 @@ type Props = {
 function StageCol(props: Props) {
   const [title, setTitle] = React.useState(props.stage.title);
 
-  const [editStageController, setEditStageController] = React.useState(false);
-  const [addTaskController, setAddTaskController] = React.useState(false);
+  const [editStageController, setEditStageController] = React.useState<boolean>(false);
+  const [addTaskController, setAddTaskController] = React.useState<boolean>(false);
+  
+
+  
+
 
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();

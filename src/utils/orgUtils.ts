@@ -46,8 +46,3 @@ export const orgAllTasks = async () => {
     const response = await request("/task/org/allTasks", "GET");
     return response;
 }
-
-// export const orgAllBoards = async () => {
-//     const response = await request("/board/org/all", "GET");
-//     return response;
-// }

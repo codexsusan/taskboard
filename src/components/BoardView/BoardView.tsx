@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useReducer } from "react";
+import React, {  useEffect, useReducer } from "react";
 import {
   Board,
   deleteBoard,
@@ -27,10 +27,11 @@ import {
 } from "../../utils/taskUtils";
 import { DeleteModal, UpdateBoard } from "../board/BoardComp";
 import { AddStage } from "../stage/StageComp";
+import AddMemberModal from "./AddMemberModal";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const AddMemberModal = React.lazy(() => import("./AddMemberModal"));
+// const AddMemberModal = React.lazy(() => import("./AddMemberModal"));
 
 const enableUpdateBoard = (
   modalStatus: ModalState,
@@ -346,15 +347,13 @@ function BoardView() {
         open={modalStatus.deleteBoard}
         closeCB={() => disableDeleteBoard(modalStatus, setModalStatus)}
       />
-      <Suspense fallback={<div>Loading...</div>}>
-        <AddMemberModal
-          boardId={boardId!}
-          open={modalStatus.addMember}
-          closeCB={() => {
-            disableAddMember(modalStatus, setModalStatus);
-          }}
-        />
-      </Suspense>
+      <AddMemberModal
+        boardId={boardId!}
+        open={modalStatus.addMember}
+        closeCB={() => {
+          disableAddMember(modalStatus, setModalStatus);
+        }}
+      />
     </div>
   );
 }

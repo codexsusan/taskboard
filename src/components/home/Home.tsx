@@ -49,7 +49,6 @@ export default function Home() {
   useEffect(() => {
     orgAllBoards()
       .then((res) => {
-
         setState((prevState) => ({
           ...prevState,
           boardsCount: res.boardCount,

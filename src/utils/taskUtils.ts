@@ -1,3 +1,4 @@
+import { User } from "../types/UserTypes";
 import { request } from "./apiUtils"
 import { Board } from "./boardUtils";
 import { Stage } from "./stageUtils";
@@ -7,7 +8,8 @@ export type Task = {
     title: string;
     description: string;
     priority: string;
-    stageId?: string
+    stageId?: string,
+    boardId?: string
 }
 
 export const getAllTask = async (boardId: Board['id'], stageId: Task['id']) => {
@@ -42,6 +44,16 @@ export const updateTask = async (boardId: Board['id'], task: Task) => {
 }
 export const allAssigned = async (boardId: Board['id'], taskId: Task['id']) => {
     const response = await request(`/task/board/${boardId}/${taskId}/allAssigned`, "GET");
+    return response;
+}
+
+export const assignTask = async (boardId: Board['id'], taskId: Task['id'], userId: string) => {
+    const response = await request(`/task/board/${boardId}/${taskId}/assign/${userId}`);
+    return response;
+}
+
+export const unassignTask = async (boardId: Board['id'], taskId: Task['id'], userId: string) => {
+    const response = await request(`/task/board/${boardId}/${taskId}/unassign/${userId}`);
     return response;
 }
 

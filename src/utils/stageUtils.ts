@@ -14,6 +14,11 @@ export const getAllStage = async (boardId: Board['id']) => {
     return response;
 }
 
+// export const getSingleStage = async ( boardId: Board['id'], id: Stage['id'],) => {
+//     const response = await request(`/stage/board/${boardId}/stage/${id}`, "GET");
+//     return response;
+// }
+
 // Done
 export const createStage = async (stage: Stage, boardId: Board['id']) => {
     const response = await request(`/stage/board/${boardId}/create`, "POST", {

@@ -1,11 +1,12 @@
-import React from "react";
-import { Task } from "../../utils/taskUtils";
+import React, { Fragment } from "react";
+import { Task, allAssigned } from "../../utils/taskUtils";
 import DropdownModal from "../../common/DropdownModal";
 import { UpdateTaskModal } from "../task/TaskComp";
 import { Stage } from "./reducer";
 import AssignTaskModal from "./AssignTaskModal";
 import SideOvers from "../../common/SideOvers";
-import SideOversContent from "../../common/SideOversContent";
+import TaskDetail from "../task/TaskDetail";
+import { MemberType } from "../task/reducer";
 
 const openTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(true);
@@ -36,6 +37,27 @@ function TaskBox(props: {
   const [taskModal, setTaskModal] = React.useState(false);
   const [assignTaskModal, setAssignTaskModal] = React.useState(false);
   const [sideOver, setSideOver] = React.useState(false);
+  const [taskAssigned, setTaskAssigned] = React.useState<MemberType[]>([]);
+  const setTaskAssignCB = (newUser: MemberType) => {
+    setTaskAssigned([...taskAssigned, newUser]);
+  };
+
+  const setTaskUnassignCB = (user: MemberType) => {
+    setTaskAssigned(
+      taskAssigned.filter((assignedUser) => assignedUser.id !== user.id)
+    );
+  };
+
+  React.useEffect(() => {
+    allAssigned(props.task.boardId!, props.task.id)
+      .then((res) => {
+        if (res.success) setTaskAssigned(res.data);
+        if (!res.success) alert(res.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [props.task]);
 
   const closeSideOver: () => void = () => {
     setSideOver(false);
@@ -43,7 +65,6 @@ function TaskBox(props: {
 
   function handleOnDrag(e: React.DragEvent, data: Task) {
     e.dataTransfer.setData("task", JSON.stringify(data));
-    // console.log(data);
   }
 
   return (
@@ -75,11 +96,28 @@ function TaskBox(props: {
       <div className="my-1">
         <h1 className="text-lg font-semibold">{props.task.title}</h1>
         <div>{props.task.description}</div>
+        <div className="flex -space-x-2 overflow-hidden mt-4 py-1 px-2">
+          {taskAssigned.map((user: MemberType) => {
+            return user.image ? (
+              <Fragment key={user.id}>
+                <img
+                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                  src={user.image}
+                  alt=""
+                />
+              </Fragment>
+            ) : (
+              <Fragment key={user.id}>
+                <img
+                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white"
+                  src="https://res.cloudinary.com/dgxbzasei/image/upload/v1691064812/download_xfqes8.jpg"
+                  alt=""
+                />
+              </Fragment>
+            );
+          })}
+        </div>
       </div>
-      {/* <div className="flex gap-x-2 items-center my-2 justify-end">
-        <Icon name="comment" />
-        <div className="text-[#787486]">Comment</div>
-      </div> */}
       <UpdateTaskModal
         task={props.task}
         open={taskModal}
@@ -92,7 +130,14 @@ function TaskBox(props: {
         closeCB={() => closeAssignTaskModalCB(setAssignTaskModal)}
       />
       <SideOvers open={sideOver} closeCB={closeSideOver}>
-        <SideOversContent updateTaskCB={props.updateTaskCB} stageId={props.stageId} deleteTaskCB={props.deleteTaskCB} task={props.task} />
+        <TaskDetail
+          setTaskAssignCB={setTaskAssignCB}
+          setTaskUnassignCB={setTaskUnassignCB}
+          updateTaskCB={props.updateTaskCB}
+          stageId={props.stageId}
+          deleteTaskCB={props.deleteTaskCB}
+          task={props.task}
+        />
       </SideOvers>
     </div>
   );
