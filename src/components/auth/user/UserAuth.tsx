@@ -4,9 +4,10 @@ import InputField from "../../../common/InputField";
 import { useNavigate } from "react-router-dom";
 
 import { User, authType } from "../../../types/UserTypes";
-import { loginUser, createUser } from "../../../utils/userUtils";
+import { userLogIn } from "../../../utils/userUtils";
 import Images from "../../../common/Images";
 import logo from "../../../assets/Logo.png";
+import Button from "../../../common/Buttons";
 
 type ChangeName = { type: "CHANGE_NAME"; payload: string };
 
@@ -101,7 +102,7 @@ function Login(props: {
   const navigate = useNavigate();
   const handleLogin = async (user: User) => {
     try {
-      const userData = await loginUser(user);
+      const userData = await userLogIn(user);
       if (userData.success) {
         navigate("/home");
         localStorage.setItem("token", userData.authToken);
@@ -118,7 +119,7 @@ function Login(props: {
       <div className="w-1/3 text-center">
         <div>
           <div className="text-2xl text-[#696969] font-semibold mb-2">
-            Log in
+            User Log in
           </div>
           <div className="text-slate-500">
             Enter your credentials to access your account
@@ -155,17 +156,13 @@ function Login(props: {
           >
             Login
           </button>
-          <div className="text-center">
-            Not a member?{" "}
-            <span
-              onClick={() => {
-                navigate("/register");
-              }}
-              className="text-blue-600 hover:text-blue-800 cursor-pointer"
-            >
-              Sign Up
-            </span>
-          </div>
+          <Button
+            theme="light"
+            children={"Log in as Organization"}
+            onClick={() => {
+              navigate("/org/login");
+            }}
+          />
         </form>
       </div>
     </div>
@@ -184,7 +181,7 @@ function Signup(props: {
   const handleSignUp = async (user: User) => {
     console.log(user);
     try {
-      // createUser(user)
+      // userSignUp(user)
       //   .then((data) => {
       //     if (data.success) {
       //       navigate("/board");

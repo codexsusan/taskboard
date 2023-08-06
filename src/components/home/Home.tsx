@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { formatDate, greetingMessage } from "../../utils/dateUtils";
-import jwt_decode from "jwt-decode";
-import { allMembers, orgAllTasks } from "../../utils/orgUtils";
+// import jwt_decode from "jwt-decode";
+import {viewAllTasksInOrg} from "../../utils/taskUtils";
 import Members from "./Members";
-import { orgAllBoards } from "../../utils/boardUtils";
+import { getAllBoards } from "../../utils/boardUtils";
+import { getAllUsersPaginated } from "../../utils/userUtils";
 
 
 type analyticsData = {
@@ -12,21 +13,21 @@ type analyticsData = {
   desc: string;
 };
 
-// type UserTypes = {
-//   userType: string;
-//   iat: number;
-// } & (
-//   | {
-//       user: {
-//         id: string;
-//       };
-//     }
-//   | {
-//       org: {
-//         id: string;
-//       };
-//     }
-// );
+export type UserTypes = {
+  userType: string;
+  iat: number;
+} & (
+  | {
+      user: {
+        id: string;
+      };
+    }
+  | {
+      org: {
+        id: string;
+      };
+    }
+);
 
 type State = {
   boardsCount: number;
@@ -36,9 +37,6 @@ type State = {
 
 export default function Home() {
   const presentDay = formatDate();
-  // const token = localStorage.getItem("token");
-  // const user: UserTypes = jwt_decode(token!);
-  // const userType = user.userType;
   const greetings = greetingMessage();
   const [state, setState] = useState<State>({
     boardsCount: 0,
@@ -47,7 +45,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    orgAllBoards()
+    getAllBoards()
       .then((res) => {
         setState((prevState) => ({
           ...prevState,
@@ -57,7 +55,7 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    orgAllTasks()
+      viewAllTasksInOrg()
       .then((res) => {
         setState((prevState) => ({
           ...prevState,
@@ -67,7 +65,7 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    allMembers(1, 2)
+      getAllUsersPaginated(1, 2)
       .then((res) => {
         setState((prevState) => ({
           ...prevState,

@@ -11,9 +11,8 @@ import {
 } from "@material-tailwind/react";
 
 import React, { useEffect } from "react";
-import { allMembers } from "../../utils/orgUtils";
 import RegisterUser from "./RegisterUser";
-import { deleteUser } from "../../utils/userUtils";
+import { deleteUser, getAllUsersPaginated } from "../../utils/userUtils";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -113,7 +112,7 @@ export default function MembersTable() {
   const [addMember, setAddMember] = React.useState(false);
 
   useEffect(() => {
-    allMembers(1, limit)
+    getAllUsersPaginated(1, limit)
       .then((res) => {
         dispatch({
           type: "INITIALIZE_STATE",
@@ -133,7 +132,7 @@ export default function MembersTable() {
   }, []);
 
   const handlePreviousCB = () => {
-    allMembers(state.currentPage - 1, limit)
+    getAllUsersPaginated(state.currentPage - 1, limit)
       .then((res) => {
         dispatch({
           type: "HANDLE_PREVIOUS",
@@ -151,7 +150,7 @@ export default function MembersTable() {
   };
 
   const handleNextCB = () => {
-    allMembers(state.currentPage + 1, 2)
+    getAllUsersPaginated(state.currentPage + 1, 2)
       .then((res) => {
         dispatch({
           type: "HANDLE_NEXT",

@@ -8,12 +8,14 @@ export type Org = {
     confirmPassword: string;
 };
 
-export const orgMe = async () => {
-    const response = await request("/org/me", "GET");
-    return response;
-}
-// Done
-export const createOrg = async (org: Org) => {
+// NOTE: Currently not in use
+// export const orgMe = async () => {
+//     const response = await request("/org/me", "GET");
+//     return response;
+// }
+
+// Organization signup
+export const orgSignUp = async (org: Org) => {
     const response = await request("/org/register", "POST", {
         orgname: org.orgname,
         email: org.email,
@@ -22,8 +24,8 @@ export const createOrg = async (org: Org) => {
     return response;
 }
 
-// Done
-export const loginOrg = async (org: Org) => {
+// Organization login
+export const orgLogin = async (org: Org) => {
     const { email, password } = org;
     const response = await request("/org/login", "POST", {
         email,
@@ -32,17 +34,37 @@ export const loginOrg = async (org: Org) => {
     return response;
 }
 
-// Done
-export const allMembers = async (page: number, limit: number) => {
-    const response = await request(`/user/org/all`, "GET", {
-        page,
-        limit
+// Delete Organization
+export const orgDelete = async () => {
+    const response = await request("/org/delete", "DELETE");
+    return response;
+}
+
+// Update Organization basic such as orgname and email
+export const orgUpdateBasic = async (orgname: string, email: string) => {
+    const response = await request("/org/update/basic", "PATCH", {
+        orgname, email
     });
     return response;
 }
 
-// Done
-export const orgAllTasks = async () => {
-    const response = await request("/task/org/allTasks", "GET");
+// Update Password 
+export const updateCredentials = async (oldPassword: string, newPassword: string) => {
+    const response = await request("/org/update/credentials", "PATCH", {
+        oldPassword, newPassword
+    });
     return response;
 }
+
+// Get organization data
+export const getOrg = async (orgId: string) => {
+    const response = await request(`/org/view/${orgId}`);
+    return response;
+}
+
+// Need to work with avatar upload
+// export const avatar = async () =>{
+    // const response = await request("/org/update/avatar", "PATCH", {
+
+    // })
+// }

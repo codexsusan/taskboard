@@ -9,8 +9,9 @@ import {
 import { IconButton } from "../../common/IconButton";
 import InputField from "../../common/InputField";
 import Button from "../../common/Buttons";
-import { allBoardMembers } from "../../utils/userUtils";
+import { getAllUsersInBoard } from "../../utils/userUtils";
 import { MemberType, Stage, reducer } from "./reducer";
+import { toast } from "react-toastify";
 
 function TaskDetail(props: {
   setTaskAssignCB: (assignedUsers: MemberType) => void;
@@ -33,12 +34,16 @@ function TaskDetail(props: {
   const [task, setTask] = React.useState<Task>(props.task);
 
   const assignMemberCB = (member: MemberType) => {
-    dispatch({ type: "ASSIGN_MEMBER", payload: member });
-    props.setTaskAssignCB(member);
     // TODO: API CALL REMAINING
     assignTask(props.task.boardId!, task.id, member.id)
       .then((res) => {
         console.log(res);
+        if (res.success) {
+          dispatch({ type: "ASSIGN_MEMBER", payload: member });
+          props.setTaskAssignCB(member);
+        } else {
+          toast.error(res.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +64,7 @@ function TaskDetail(props: {
   };
 
   React.useEffect(() => {
-    allBoardMembers(props.task.boardId!)
+    getAllUsersInBoard(props.task.boardId!)
       .then((res) => {
         dispatch({ type: "INITIALIZE_BOARD_MEMBERS", payload: res.data });
       })

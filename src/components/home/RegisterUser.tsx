@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "../../common/Modal";
 import InputField from "../../common/InputField";
-import { createUser } from "../../utils/userUtils";
+import { userSignUp } from "../../utils/userUtils";
 // import { Toastify } from "../../common/Toastify";
 
 import { toast } from "react-toastify";
@@ -37,7 +37,7 @@ function RegisterUser(props: {
   };
 
   const handleUserRegister = (userData: UserData) => {
-    createUser(userData)
+    userSignUp(userData)
       .then((res) => {
         if (res.success) {
           toast.success(res.message);

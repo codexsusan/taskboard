@@ -7,9 +7,8 @@ import { Task, allAssigned } from "../../utils/taskUtils";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import Modal from "../../common/Modal";
 import { useParams } from "react-router-dom";
-import { allBoardMembers } from "../../utils/userUtils";
+import { getAllUsersInBoard } from "../../utils/userUtils";
 import { MemberType } from "./AddMemberModal";
-
 
 function AssignTaskModal(props: {
   open: boolean;
@@ -26,22 +25,20 @@ function AssignTaskModal(props: {
   >([]);
 
   useEffect(() => {
-    allBoardMembers(boardId!)
+    getAllUsersInBoard(boardId!)
       .then((res) => {
         setBoardMembers(res.data);
       })
       .catch((err) => console.log(err));
-
-    
   }, [boardId]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setUnAssignedMembers(
       boardMembers.filter((member) => {
         return !assignedMembers.includes(member);
       })
     );
-  },[assignedMembers, boardMembers])
+  }, [assignedMembers, boardMembers]);
 
   useEffect(() => {
     allAssigned(boardId!, props.task.id)

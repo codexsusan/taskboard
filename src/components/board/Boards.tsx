@@ -1,7 +1,7 @@
 import Icon from "../../common/Icon";
 import React, { useEffect, useReducer } from "react";
 import Button from "../../common/Buttons";
-import { Board, createBoard, orgAllBoards } from "../../utils/boardUtils";
+import { Board, createBoard, getAllBoards } from "../../utils/boardUtils";
 import { BoardState, reducer } from "./reducer";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../common/Modal";
@@ -9,6 +9,7 @@ import { BoardPopUp } from "./BoardPopUp";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { currentUser } from "../../utils/userUtils";
 
 function Boards() {
   const navigate = useNavigate();
@@ -27,14 +28,18 @@ function Boards() {
   const addBoardCB = (board: Board) => {
     createBoard(board)
       .then((res) => {
+        console.log(res);
         if (res.success) {
           dispatch({ type: "ADD_BOARD", payload: res.data });
           toast.success(res.message);
           closeModalCB();
+        } else {
+          toast.error(res.message);
         }
       })
       .catch((error) => {
         console.log(error);
+        toast.error(error.message);
       });
   };
 
@@ -62,9 +67,10 @@ function Boards() {
       navigate("/board");
     }
     const fetchBoardData = async () => {
-      await orgAllBoards().then((res) => {
+      const user = currentUser();
+      await getAllBoards().then((res) => {
         if (res.error) {
-          return console.log(res.error);
+          return toast.error(res.message);
         }
         if (res.boardCount !== 0) {
           dispatch({ type: "INITIALIZE_STATE", data: res.data });
@@ -72,6 +78,8 @@ function Boards() {
           dispatch({ type: "INITIALIZE_STATE", data: [] });
         }
       });
+      if (user.userType === "org") {
+      }
     };
     fetchBoardData();
   }, [location.pathname, navigate]);
@@ -109,7 +117,7 @@ function Boards() {
         )}
 
         {!state.loading &&
-          state.boards.length > 0 &&
+          state.boards &&
           state.boards.map((board) => {
             return (
               <BoardCard
@@ -120,6 +128,17 @@ function Boards() {
               />
             );
           })}
+        {/* {state.boards &&
+          state.boards.map((board) => {
+            return (
+              <BoardCard
+                id={board.id}
+                key={board.id}
+                title={board.title}
+                description={board.description}
+              />
+            );
+          })} */}
       </div>
       <Modal open={state.modalStatus} closeCB={() => closeModalCB()}>
         <BoardPopUp

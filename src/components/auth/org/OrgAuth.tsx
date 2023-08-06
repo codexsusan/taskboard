@@ -3,9 +3,12 @@ import InputField from "../../../common/InputField";
 import Images from "../../../common/Images";
 import logo from "../../../assets/Logo.png";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { Org, createOrg, loginOrg } from "../../../utils/orgUtils";
+import { Org, orgSignUp, orgLogin } from "../../../utils/orgUtils";
 import { reducer, authType } from "./reducer";
+import Button from "../../../common/Buttons";
 
 function OrgAuth(props: { authMethod: authType }) {
   const initialState: Org = {
@@ -83,13 +86,21 @@ function OrgLogin(props: {
 
   const handleLogin = (org: Org) => {
     try {
-      loginOrg(org)
+      orgLogin(org)
         .then((res) => {
-          navigate("/board");
-          props.updateOrg(res.org);
-          localStorage.setItem("token", res.authToken);
+          console.log(res);
+          if (res.success) {
+            navigate("/board");
+            props.updateOrg(res.org);
+            localStorage.setItem("token", res.authToken);
+          } else {
+            toast.error(res.message);
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          console.log(err);
+          toast.error(err.message);
+        });
     } catch (error) {
       console.log(error);
     }
@@ -128,6 +139,13 @@ function OrgLogin(props: {
           >
             Login
           </button>
+          <Button
+            theme="light"
+            children={"Log in as user"}
+            onClick={() => {
+              navigate("/login");
+            }}
+          />
           <div className="text-center">
             Not a member?{" "}
             <span
@@ -159,7 +177,7 @@ function OrgSignup(props: {
 
   const handleSignUp = (org: Org) => {
     try {
-      createOrg(org)
+      orgSignUp(org)
         .then((res) => {
           if (res.success) {
             navigate("/board");

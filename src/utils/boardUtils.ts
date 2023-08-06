@@ -7,7 +7,7 @@ export type Board = {
     stageOrder?: string[];
 }
 
-// Done
+// Create a board
 export const createBoard = async (board: Board) => {
     const response = request("/board/create", "POST", {
         title: board.title,
@@ -16,7 +16,13 @@ export const createBoard = async (board: Board) => {
     return response;
 }
 
-// Done
+// Get a board detail
+export const getBoard = async (id: string) => {
+    const response = request(`/board/view/${id}`, "GET");
+    return response;
+}
+
+// Update a board
 export const updateBoard = async (board: Board) => {
     const response = request(`/board/update/${board.id}`, "PATCH", {
         title: board.title,
@@ -25,18 +31,19 @@ export const updateBoard = async (board: Board) => {
     return response;
 }
 
-// Done
-export const orgAllBoards = async () => {
+// Delete a board
+export const deleteBoard = async (id: string) => {
+    const response = request(`/board/${id}`, "DELETE");
+    return response;
+}
+
+// Get all board of an organization
+export const getAllBoards = async () => {
     const response = request("/board/org/all", "GET");
     return response;
 }
 
-// Done
-export const getBoard = async (id: string) => {
-    const response = request(`/board/view/${id}`, "GET");
-    return response;
-}
-
+// Add a member to a board
 export const addMember = async (boardId: string, email: string) => {
     const response = request(`/board/${boardId}/add-member`, "POST", {
         email: email
@@ -44,13 +51,8 @@ export const addMember = async (boardId: string, email: string) => {
     return response;
 }
 
+// Remove member from a board
 export const removeMember = async (boardId: string, memberId: string) => {
     const response = request(`/board/${boardId}/remove-member/${memberId}`, "DELETE");
-    return response;
-}
-
-// Done
-export const deleteBoard = async (id: string) => {
-    const response = request(`/board/${id}`, "DELETE");
     return response;
 }

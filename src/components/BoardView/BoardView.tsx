@@ -1,4 +1,4 @@
-import React, {  useEffect, useReducer } from "react";
+import React, { useEffect, useReducer } from "react";
 import {
   Board,
   deleteBoard,
@@ -118,12 +118,13 @@ function BoardView() {
         if (!res.success) {
           return navigate("/board");
         }
+        // console.log([res.data]);
         dispatch({
           type: "INITIALIZE_BOARD",
           payload: res.data,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
     getAllStage(boardId!)
       .then((res) => {
         dispatch({
@@ -131,7 +132,7 @@ function BoardView() {
           payload: res.data,
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
   }, [boardId, navigate]);
 
   const updateBoardCB = (board: Board) => {
@@ -143,10 +144,9 @@ function BoardView() {
         } else {
           toast.error(res.message);
         }
-        // console.log(res);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
   };
 
@@ -161,7 +161,7 @@ function BoardView() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
     disableDeleteBoard(modalStatus, setModalStatus);
   };
@@ -169,19 +169,24 @@ function BoardView() {
   const createStageCB = (stage: Stage) => {
     createStage(stage, boardId!)
       .then((res) => {
-        res.success
-          ? dispatch({
-              type: "ADD_STAGE",
-              payload: {
-                id: res.data.id,
-                title: res.data.title,
-                tasks: [],
-              },
-            })
-          : console.log("not created");
+        console.log(res);
+        if (res.success) {
+          dispatch({
+            type: "ADD_STAGE",
+            payload: {
+              id: res.data.id,
+              title: res.data.title,
+              tasks: [],
+            },
+          });
+          toast.success(res.message);
+          console.log(state.stage);
+        } else {
+          toast.error(res.message);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
   };
 
@@ -192,25 +197,32 @@ function BoardView() {
     });
     updateStageTitle(id, title, boardId!)
       .then((res) => {
-        console.log(res);
+        if (res.success) {
+          toast.success(res.message);
+        } else {
+          toast.error(res.message);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
   };
 
   const deleteStageCB = (id: Stage["id"]) => {
     deleteStage(id, boardId!)
       .then((res) => {
-        res.success
-          ? dispatch({
-              type: "DELETE_STAGE",
-              payload: id,
-            })
-          : console.log("not deleted");
+        if (res.success) {
+          dispatch({
+            type: "DELETE_STAGE",
+            payload: id,
+          });
+          toast.success(res.message);
+        } else {
+          toast.error(res.message);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
   };
 
@@ -225,19 +237,22 @@ function BoardView() {
               task: res.data,
             },
           });
+          toast.success(res.message);
+        } else {
+          toast.error(res.message);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
   };
 
   const updateTaskCB = (task: Task) => {
     dispatch({ type: "UPDATE_TASK", payload: task });
     updateTask(boardId!, task)
       .then((res) => {
-        console.log(res);
+        toast.success(res.message);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error(err.message);
       });
   };
 
@@ -246,11 +261,12 @@ function BoardView() {
       .then((res) => {
         if (res.success) {
           dispatch({ type: "DELETE_TASK", payload: { stageId, taskId } });
+          toast.success(res.message);
         } else {
-          alert("Task not deleted");
+          toast.error(res.message);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
   };
 
   const switchStage = (
@@ -272,7 +288,7 @@ function BoardView() {
           },
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => toast.error(err.message));
   };
 
   return (
@@ -312,23 +328,29 @@ function BoardView() {
       <Divider />
       <div className="flex w-full gap-x-4 h-full">
         {state.board.stageOrder &&
-          state.board.stageOrder.map((stage) => {
-            const stageData = state.stage.find((s) => s.id === stage);
-            return stageData ? (
-              <StageCol
-                stageCount={state.stage.length}
-                switchStage={switchStage}
-                deleteTaskCB={deleteTaskCB}
-                addTaskCB={addTaskCB}
-                updateTaskCB={updateTaskCB}
-                updateStageTitleCB={UpdateStageTitleCB}
-                deleteStageCB={deleteStageCB}
-                key={stageData.id}
-                stage={stageData}
-              />
-            ) : null;
+          state.board.stageOrder.map((stageId) => {
+            // console.log(state.stage);
+            const stageData =
+              state.stage &&
+              state.stage.find((currentStage) => currentStage.id === stageId);
+            return (
+              stageData && (
+                <StageCol
+                  stageCount={state.stage.length}
+                  switchStage={switchStage}
+                  deleteTaskCB={deleteTaskCB}
+                  addTaskCB={addTaskCB}
+                  updateTaskCB={updateTaskCB}
+                  updateStageTitleCB={UpdateStageTitleCB}
+                  deleteStageCB={deleteStageCB}
+                  key={stageData.id}
+                  stage={stageData}
+                />
+              )
+            );
           })}
       </div>
+
       <AddStage
         open={modalStatus.createStage}
         closeCB={() => {

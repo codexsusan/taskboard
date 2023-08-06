@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import Divider from "../../common/Divider";
 import Button from "../../common/Buttons";
 import { addMember, removeMember } from "../../utils/boardUtils";
-import { allBoardMembers, allOrgUsers } from "../../utils/userUtils";
+import { getAllUsersInBoard, getAllUsersInOrg } from "../../utils/userUtils";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,7 +25,7 @@ function AddMemberModal(props: {
   const [currentMembers, setCurrentMembers] = React.useState<MemberType[]>([]);
 
   useEffect(() => {
-    allBoardMembers(props.boardId)
+    getAllUsersInBoard(props.boardId)
       .then((res) => {
         setCurrentMembers(res.data);
       })
@@ -54,11 +54,9 @@ function AddMemberModal(props: {
       });
   };
 
-  // TODO: Delete member is not working properly
   const handleRemoveMember: (memberId: string) => void = (memberId) => {
     removeMember(props.boardId, memberId)
       .then((res) => {
-        console.log(res);
         if (!res.success) {
           return toast.error(res.message);
         }
@@ -106,7 +104,7 @@ function AddMemberModal(props: {
           <div>
             <div className="text-xl font-semibold">Members</div>
             <div className="flex flex-col gap-y-2 mt-2">
-              {currentMembers.map((member) => {
+              {currentMembers && currentMembers.map((member) => {
                 return (
                   <MemberCard
                     key={member.id}

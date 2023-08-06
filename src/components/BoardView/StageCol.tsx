@@ -1,5 +1,5 @@
 import React from "react";
-import { Task, allAssigned } from "../../utils/taskUtils";
+import { Task } from "../../utils/taskUtils";
 import { IconButton } from "../../common/IconButton";
 import Divider from "../../common/Divider";
 import TaskBox from "./TaskBox";
