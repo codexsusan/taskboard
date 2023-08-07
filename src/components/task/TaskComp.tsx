@@ -32,6 +32,12 @@ export function AddTaskModal(props: Props) {
             e.preventDefault();
             props.addTaskCB(props.stageId, task);
             props.closeCB();
+            setTask({
+              id: "",
+              title: "",
+              description: "",
+              priority: "",
+            });
           }}
         >
           <InputField

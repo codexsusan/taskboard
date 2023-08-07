@@ -37,7 +37,6 @@ function TaskDetail(props: {
     // TODO: API CALL REMAINING
     assignTask(props.task.boardId!, task.id, member.id)
       .then((res) => {
-        console.log(res);
         if (res.success) {
           dispatch({ type: "ASSIGN_MEMBER", payload: member });
           props.setTaskAssignCB(member);
@@ -53,10 +52,10 @@ function TaskDetail(props: {
   const unassignMemberCB = (member: MemberType) => {
     dispatch({ type: "UNASSIGN_MEMBER", payload: member });
     props.setTaskUnassignCB(member);
-    // TODO: API CALL REMAINING
     unassignTask(props.task.boardId!, task.id, member.id)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
+        toast.success(res.message);
       })
       .catch((err) => {
         console.log(err);
@@ -80,7 +79,7 @@ function TaskDetail(props: {
           type: "INITIALIZE_ASSIGNED_MEMBERS",
           payload: res.data,
         });
-        console.log(res);
+        // console.log(res); 
       })
       .catch((err) => {
         console.log(err);

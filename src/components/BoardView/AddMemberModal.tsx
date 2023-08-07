@@ -78,7 +78,10 @@ function AddMemberModal(props: {
             <div className="text-xl font-semibold">Add Member?</div>
             <XMarkIcon
               className="h-6 w-6 cursor-pointer"
-              onClick={props.closeCB}
+              onClick={() => {
+                props.closeCB();
+                setEmail("");
+              }}
             />
           </div>
           {/* <Divider /> */}
@@ -104,15 +107,16 @@ function AddMemberModal(props: {
           <div>
             <div className="text-xl font-semibold">Members</div>
             <div className="flex flex-col gap-y-2 mt-2">
-              {currentMembers && currentMembers.map((member) => {
-                return (
-                  <MemberCard
-                    key={member.id}
-                    member={member}
-                    handleRemoveMember={handleRemoveMember}
-                  />
-                );
-              })}
+              {currentMembers &&
+                currentMembers.map((member) => {
+                  return (
+                    <MemberCard
+                      key={member.id}
+                      member={member}
+                      handleRemoveMember={handleRemoveMember}
+                    />
+                  );
+                })}
             </div>
           </div>
         </div>

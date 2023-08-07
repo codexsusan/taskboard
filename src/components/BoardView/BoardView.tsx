@@ -118,7 +118,6 @@ function BoardView() {
         if (!res.success) {
           return navigate("/board");
         }
-        // console.log([res.data]);
         dispatch({
           type: "INITIALIZE_BOARD",
           payload: res.data,
@@ -169,7 +168,6 @@ function BoardView() {
   const createStageCB = (stage: Stage) => {
     createStage(stage, boardId!)
       .then((res) => {
-        console.log(res);
         if (res.success) {
           dispatch({
             type: "ADD_STAGE",
@@ -180,7 +178,6 @@ function BoardView() {
             },
           });
           toast.success(res.message);
-          console.log(state.stage);
         } else {
           toast.error(res.message);
         }
@@ -329,7 +326,6 @@ function BoardView() {
       <div className="flex w-full gap-x-4 h-full">
         {state.board.stageOrder &&
           state.board.stageOrder.map((stageId) => {
-            // console.log(state.stage);
             const stageData =
               state.stage &&
               state.stage.find((currentStage) => currentStage.id === stageId);

@@ -15,7 +15,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: (
       <AuthContainer>
-        <Auth authMethod="login" />
+        <OrgAuth authMethod="login" />
       </AuthContainer>
     ),
   },
