@@ -32,7 +32,6 @@ function Boards() {
   const addBoardCB = (board: Board) => {
     createBoard(board)
       .then((res) => {
-        console.log(res);
         if (res.success) {
           dispatch({ type: "ADD_BOARD", payload: res.data });
           toast.success(res.message);

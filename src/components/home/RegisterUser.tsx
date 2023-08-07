@@ -2,7 +2,6 @@ import React from "react";
 import Modal from "../../common/Modal";
 import InputField from "../../common/InputField";
 import { userSignUp } from "../../utils/userUtils";
-// import { Toastify } from "../../common/Toastify";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

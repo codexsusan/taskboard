@@ -14,9 +14,9 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AppContainer>
-        <Home />
-      </AppContainer>
+      <AuthContainer>
+        <Auth authMethod="login" />
+      </AuthContainer>
     ),
   },
   {
