@@ -47,14 +47,14 @@ export const router = createBrowserRouter([
       </AuthContainer>
     ),
   },
-  {
-    path: "/register",
-    element: (
-      <AuthContainer>
-        <Auth authMethod="register" />
-      </AuthContainer>
-    ),
-  },
+  // {
+  //   path: "/register",
+  //   element: (
+  //     <AuthContainer>
+  //       <Auth authMethod="register" />
+  //     </AuthContainer>
+  //   ),
+  // },
   {
     path: "/home",
     element: (

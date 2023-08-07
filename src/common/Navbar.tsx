@@ -35,7 +35,7 @@ function Navbar(props: { source: string }) {
             theme="dark"
             onClick={() => {
               navigate("/login");
-              localStorage.removeItem("token");
+              localStorage.clear();
             }}
           />
         </div>

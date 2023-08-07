@@ -1,7 +1,12 @@
 import Icon from "../../common/Icon";
 import React, { useEffect, useReducer } from "react";
 import Button from "../../common/Buttons";
-import { Board, createBoard, getAllBoards } from "../../utils/boardUtils";
+import {
+  Board,
+  createBoard,
+  getAllBoards,
+  getAllBoardsByUser,
+} from "../../utils/boardUtils";
 import { BoardState, reducer } from "./reducer";
 import { useLocation, useNavigate } from "react-router-dom";
 import Modal from "../../common/Modal";
@@ -9,7 +14,6 @@ import { BoardPopUp } from "./BoardPopUp";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { currentUser } from "../../utils/userUtils";
 
 function Boards() {
   const navigate = useNavigate();
@@ -67,18 +71,38 @@ function Boards() {
       navigate("/board");
     }
     const fetchBoardData = async () => {
-      const user = currentUser();
-      await getAllBoards().then((res) => {
-        if (res.error) {
-          return toast.error(res.message);
-        }
-        if (res.boardCount !== 0) {
-          dispatch({ type: "INITIALIZE_STATE", data: res.data });
-        } else {
-          dispatch({ type: "INITIALIZE_STATE", data: [] });
-        }
-      });
-      if (user.userType === "org") {
+      const userType = localStorage.getItem("userType");
+      if (userType === "org") {
+        await getAllBoards()
+          .then((res) => {
+            if (res.error) {
+              return toast.error(res.message);
+            }
+            if (res.boardCount !== 0) {
+              dispatch({ type: "INITIALIZE_STATE", data: res.data });
+            } else {
+              dispatch({ type: "INITIALIZE_STATE", data: [] });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else if (userType === "user") {
+        await getAllBoardsByUser()
+          .then((res) => {
+            console.log(res);
+            if (res.error) {
+              return toast.error(res.message);
+            }
+            if (res.boardCount !== 0) {
+              dispatch({ type: "INITIALIZE_STATE", data: res.data });
+            } else {
+              dispatch({ type: "INITIALIZE_STATE", data: [] });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
     };
     fetchBoardData();
@@ -128,17 +152,6 @@ function Boards() {
               />
             );
           })}
-        {/* {state.boards &&
-          state.boards.map((board) => {
-            return (
-              <BoardCard
-                id={board.id}
-                key={board.id}
-                title={board.title}
-                description={board.description}
-              />
-            );
-          })} */}
       </div>
       <Modal open={state.modalStatus} closeCB={() => closeModalCB()}>
         <BoardPopUp
@@ -166,7 +179,7 @@ function BoardCard(props: { id: string; title: string; description: string }) {
     >
       <div className="flex text-[#0D062D]/[0.75] justify-between w-full items-start">
         <div className=" font-semibold text-xl">{props.title}</div>
-        <Icon name="vertical-detail" />
+        {/* <Icon name="vertical-detail" /> */}
       </div>
       <div className="w-full ">
         <div className="font-normal">

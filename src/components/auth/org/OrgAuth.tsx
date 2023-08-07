@@ -88,17 +88,16 @@ function OrgLogin(props: {
     try {
       orgLogin(org)
         .then((res) => {
-          console.log(res);
           if (res.success) {
             navigate("/board");
             props.updateOrg(res.org);
             localStorage.setItem("token", res.authToken);
+            
           } else {
             toast.error(res.message);
           }
         })
         .catch((err) => {
-          console.log(err);
           toast.error(err.message);
         });
     } catch (error) {
@@ -183,12 +182,13 @@ function OrgSignup(props: {
             navigate("/board");
             localStorage.setItem("token", res.authToken);
           } else {
-            console.log(res);
+            toast.error(res.message);
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => toast.error(err.message));
     } catch (error) {
       console.log(error);
+      // toast.error(error.message)
     }
   };
   return (

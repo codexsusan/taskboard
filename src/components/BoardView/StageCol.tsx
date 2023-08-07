@@ -48,10 +48,6 @@ function StageCol(props: Props) {
   const [editStageController, setEditStageController] = React.useState<boolean>(false);
   const [addTaskController, setAddTaskController] = React.useState<boolean>(false);
   
-
-  
-
-
   function handleDragOver(e: React.DragEvent) {
     e.preventDefault();
   }
