@@ -2,6 +2,7 @@ type methodType = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
 const base_url = "https://taskboard-fnrp.onrender.com";
 
+
 export const request = async (
   endpoint: string,
   method: methodType = "GET",
