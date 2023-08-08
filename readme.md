@@ -2,8 +2,6 @@
 
 TaskBoard is a simple and effective task management system that allows organizations to register and manage their employees efficiently. This platform enables users to create boards, assign tasks to employees, and visualize the progress of tasks in a Kanban board style flow. With TaskBoard, your organization can streamline its task management process and improve productivity.
 
-[TaskBoard]
-
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Features](#features)
