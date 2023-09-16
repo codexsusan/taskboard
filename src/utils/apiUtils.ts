@@ -1,6 +1,6 @@
 type methodType = "GET" | "POST" | "PATCH" | "PUT" | "DELETE";
 
-const base_url = process.env.API_BASE_URL;
+const base_url = process.env.REACT_APP_API_BASE_URL;
 
 
 export const request = async (
@@ -32,7 +32,6 @@ export const request = async (
     },
     body: method !== "GET" ? JSON.stringify(data) : undefined,
   });
-  // console.log(response);
   if (response.ok) {
     return await response.json();
   }

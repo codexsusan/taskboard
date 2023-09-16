@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 import InputField from "../../../common/InputField";
 
 import { useNavigate } from "react-router-dom";
@@ -9,6 +9,7 @@ import Images from "../../../common/Images";
 import logo from "../../../assets/Logo.png";
 import Button from "../../../common/Buttons";
 import { toast } from "react-toastify";
+import { Spinner } from "@material-tailwind/react";
 
 type ChangeName = { type: "CHANGE_NAME"; payload: string };
 
@@ -51,59 +52,14 @@ function UserAuth(props: { authMethod: authType }) {
   };
 
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [loading, setLoading] = useState(false);
 
-  // const changeName = (value: string) => {
-  //   dispatch({
-  //     type: "CHANGE_NAME",
-  //     payload: value,
-  //   });
-  // };
-
-  const changeEmail = (value: string) => {
-    dispatch({ type: "CHANGE_EMAIL", payload: value });
-  };
-
-  const changePassword = (value: string) => {
-    dispatch({ type: "CHANGE_PASSWORD", payload: value });
-  };
-
-  // const changeConfirmPassword = (value: string) => {
-  //   dispatch({ type: "CHANGE_CONFIRM_PASSWORD", payload: value });
-  // };
-
-  switch (props.authMethod) {
-    case "login": {
-      return (
-        <Login
-          state={state}
-          changeEmailCB={changeEmail}
-          changePasswordCB={changePassword}
-        />
-      );
-    }
-    // case "register": {
-    //   return (
-    //     <Signup
-    //       state={state}
-    //       changeNameCB={changeName}
-    //       changeEmailCB={changeEmail}
-    //       changePasswordCB={changePassword}
-    //       changeConfirmPasswordCB={changeConfirmPassword}
-    //     />
-    //   );
-    // }
-  }
-}
-
-function Login(props: {
-  state: User;
-  changeEmailCB: (value: string) => void;
-  changePasswordCB: (value: string) => void;
-}) {
   const navigate = useNavigate();
   const handleLogin = async (user: User) => {
     try {
+      setLoading(true);
       const userData = await userLogIn(user);
+      setLoading(false);
       if (userData.success) {
         navigate("/home");
         localStorage.setItem("token", userData.authToken);
@@ -114,6 +70,26 @@ function Login(props: {
       console.log(error);
     }
   };
+
+  const changeEmail = (value: string) => {
+    dispatch({ type: "CHANGE_EMAIL", payload: value });
+  };
+
+  const changePassword = (value: string) => {
+    dispatch({ type: "CHANGE_PASSWORD", payload: value });
+  };
+  // switch (props.authMethod) {
+  //   case "login": {
+  //     return (
+  //       <Login
+  //         state={state}
+  //         changeEmailCB={changeEmail}
+  //         changePasswordCB={changePassword}
+  //       />
+  //     );
+  //   }
+
+  // }
   return (
     <div className="w-full flex flex-col items-center justify-center gap-y-10 mb-10">
       <Images source={logo} />
@@ -131,7 +107,7 @@ function Login(props: {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            handleLogin(props.state);
+            handleLogin(state);
           }}
           className="w-1/4 flex flex-col gap-y-3"
         >
@@ -140,21 +116,22 @@ function Login(props: {
             label="Email"
             type="email"
             required={true}
-            value={props.state.email}
-            onValueChange={props.changeEmailCB}
+            value={state.email}
+            onValueChange={changeEmail}
           />
           <InputField
             placeholder="•••••••••"
             label="Password"
             type="password"
             required={true}
-            value={props.state.password}
-            onValueChange={props.changePasswordCB}
+            value={state.password}
+            onValueChange={changePassword}
           />
           <button
             type="submit"
-            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md flex justify-center gap-x-2 items-center"
           >
+            {loading && <Spinner color="blue" />}
             Login
           </button>
           <Button
@@ -169,96 +146,5 @@ function Login(props: {
     </div>
   );
 }
-
-// function Signup(props: {
-//   state: User;
-//   changeEmailCB: (value: string) => void;
-//   changeNameCB: (value: string) => void;
-//   changePasswordCB: (value: string) => void;
-//   changeConfirmPasswordCB: (value: string) => void;
-// }) {
-//   const navigate = useNavigate();
-
-//   const handleSignUp = async (user: User) => {
-//     console.log(user);
-//     try {
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   return (
-//     <div className="w-full flex flex-col items-center justify-center gap-y-10 mb-10">
-//       <Images source={logo} />
-//       <div className="w-1/3 text-center">
-//         <div>
-//           <div className="text-2xl text-[#696969] font-semibold mb-2">
-//             Sign up
-//           </div>
-//           <div className="text-slate-500">Register yourself to access</div>
-//         </div>
-//       </div>
-//       <div className="w-full flex justify-center">
-//         <form
-//           onSubmit={(e) => {
-//             e.preventDefault();
-//             handleSignUp(props.state);
-//           }}
-//           className="w-1/4 flex flex-col gap-y-3"
-//         >
-//           <InputField
-//             placeholder="John Doe"
-//             label="Full Name"
-//             type="text"
-//             onValueChange={props.changeNameCB}
-//             value={props.state.name}
-//             required={true}
-//           />
-//           <InputField
-//             placeholder="johndoe@gmail.com"
-//             label="Email"
-//             type="email"
-//             onValueChange={props.changeEmailCB}
-//             value={props.state.email}
-//             required={true}
-//           />
-//           <InputField
-//             placeholder="•••••••••"
-//             label="Password"
-//             type="password"
-//             onValueChange={props.changePasswordCB}
-//             value={props.state.password}
-//             required={true}
-//           />
-//           <InputField
-//             placeholder="•••••••••"
-//             label="Confirm Password"
-//             type="password"
-//             onValueChange={props.changeConfirmPasswordCB}
-//             value={props.state.confirmPassword}
-//             required={true}
-//           />
-//           <button
-//             type="submit"
-//             className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
-//           >
-//             Register
-//           </button>
-//           <div className="text-center">
-//             Already a member?{" "}
-//             <span
-//               onClick={() => {
-//                 navigate("/login");
-//               }}
-//               className="text-blue-600 hover:text-blue-800 cursor-pointer"
-//             >
-//               Log in
-//             </span>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
 
 export default UserAuth;

@@ -6,10 +6,12 @@ import { userSignUp } from "../../utils/userUtils";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MembersType } from "./MembersTable";
+import { Spinner } from "@material-tailwind/react";
 export type UserData = {
   username: string;
   email: string;
   password: string;
+  loading: boolean;
 };
 
 function RegisterUser(props: {
@@ -21,6 +23,7 @@ function RegisterUser(props: {
     username: "",
     email: "",
     password: "",
+    loading: false,
   });
 
   const updateName = (value: string) => {
@@ -36,8 +39,10 @@ function RegisterUser(props: {
   };
 
   const handleUserRegister = (userData: UserData) => {
+    setUserData({ ...userData, loading: true });
     userSignUp(userData)
       .then((res) => {
+        setUserData({ ...userData, loading: false });
         if (res.success) {
           toast.success(res.message);
           props.addUserCB(res.data);
@@ -91,8 +96,9 @@ function RegisterUser(props: {
             />
             <button
               type="submit"
-              className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+              className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md flex justify-center gap-x-2 items-center"
             >
+              {userData.loading && <Spinner color="blue" />}
               Register
             </button>
           </form>

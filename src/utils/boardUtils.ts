@@ -45,7 +45,7 @@ export const getAllBoards = async () => {
 
 // Get all board of an user
 export const getAllBoardsByUser = async () => {
-  const response = request("/board/user/all", "GET");
+  const response = request("/board/user/all", "GET").then((res) => res);
   return response;
 };
 

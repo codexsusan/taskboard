@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import InputField from "../../../common/InputField";
 import Images from "../../../common/Images";
 import logo from "../../../assets/Logo.png";
@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Org, orgSignUp, orgLogin } from "../../../utils/orgUtils";
 import { reducer, authType } from "./reducer";
 import Button from "../../../common/Buttons";
+import { Spinner } from "@material-tailwind/react";
 
 function OrgAuth(props: { authMethod: authType }) {
   const initialState: Org = {
@@ -83,16 +84,18 @@ function OrgLogin(props: {
   clearValuesCB: () => void;
 }) {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = (org: Org) => {
     try {
+      setLoading(true);
       orgLogin(org)
         .then((res) => {
+          setLoading(false);
           if (res.success) {
             navigate("/board");
             props.updateOrg(res.org);
             localStorage.setItem("token", res.authToken);
-            
           } else {
             toast.error(res.message);
           }
@@ -106,7 +109,7 @@ function OrgLogin(props: {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center gap-y-10 mb-10">
+    <div className="w-full flex flex-col  items-center justify-center gap-y-10 mb-10">
       <AuthHeader {...props} />
       <div className="w-full flex justify-center">
         <form
@@ -134,8 +137,9 @@ function OrgLogin(props: {
           />
           <button
             type="submit"
-            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md flex justify-center gap-x-2 items-center"
           >
+            {loading && <Spinner color="blue" />}
             Login
           </button>
           <Button
@@ -173,11 +177,14 @@ function OrgSignup(props: {
   clearValuesCB: () => void;
 }) {
   const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
 
   const handleSignUp = (org: Org) => {
     try {
+      setLoading(true);
       orgSignUp(org)
         .then((res) => {
+          setLoading(false);
           if (res.success) {
             navigate("/board");
             localStorage.setItem("token", res.authToken);
@@ -188,7 +195,6 @@ function OrgSignup(props: {
         .catch((err) => toast.error(err.message));
     } catch (error) {
       console.log(error);
-      // toast.error(error.message)
     }
   };
   return (
@@ -236,8 +242,9 @@ function OrgSignup(props: {
           />
           <button
             type="submit"
-            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md "
+            className="border bg-[#030711] text-[#F8FAFC] border-slate-50 px-4 py-2 rounded-md  flex items-center justify-center gap-x-2"
           >
+            {loading && <Spinner color="blue" />}
             Register
           </button>
           <div className="text-center">

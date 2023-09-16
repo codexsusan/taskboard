@@ -14,6 +14,7 @@ import { BoardPopUp } from "./BoardPopUp";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Spinner } from "@material-tailwind/react";
 
 function Boards() {
   const navigate = useNavigate();
@@ -106,6 +107,7 @@ function Boards() {
     };
     fetchBoardData();
   }, [location.pathname, navigate]);
+
   return (
     <div className="flex flex-col gap-y-10 w-full px-[5rem] py-[2rem]">
       <div className="flex w-full justify-between">
@@ -128,11 +130,7 @@ function Boards() {
         </div>
       </div>
       <div className="flex w-full flex-wrap gap-10">
-        {state.loading && (
-          <div className="text-2xl font-semibold text-center w-full">
-            Loading...
-          </div>
-        )}
+        {state.loading && <Spinner color="blue" />}
         {!state.loading && state.boards.length === 0 && (
           <div className="text-2xl font-semibold text-center w-full">
             No Boards Found
