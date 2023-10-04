@@ -15,7 +15,6 @@ const closeTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(false);
 };
 
-
 function TaskBox(props: {
   task: Task;
   stageId: Stage["id"];
@@ -102,12 +101,14 @@ function TaskBox(props: {
           })}
         </div>
       </div>
-      <UpdateTaskModal
-        task={props.task}
-        open={taskModal}
-        closeCB={() => closeTaskCB(setTaskModal)}
-        updateTaskCB={props.updateTaskCB}
-      />
+      <div onClick={(e) => e.stopPropagation()}>
+        <UpdateTaskModal
+          task={props.task}
+          open={taskModal}
+          closeCB={() => closeTaskCB(setTaskModal)}
+          updateTaskCB={props.updateTaskCB}
+        />
+      </div>
       <SideOvers open={sideOver} closeCB={closeSideOver}>
         <TaskDetail
           setTaskAssignCB={setTaskAssignCB}

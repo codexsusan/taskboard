@@ -1,5 +1,17 @@
 # TaskBoard - Kanban Board Style Task Management System
 
+
+Organization Email: admin@taskboard.com
+Organization Password: 12345678
+
+User 1
+Email: chandler@gmail.com
+Password: 12345678
+
+User 2:
+Email: johndoe@gmail.com
+Password: 12345678
+
 TaskBoard is a simple and effective task management system that allows organizations to register and manage their employees efficiently. This platform enables users to create boards, assign tasks to employees, and visualize the progress of tasks in a Kanban board style flow. With TaskBoard, your organization can streamline its task management process and improve productivity.
 
 ## Table of Contents
