@@ -98,7 +98,7 @@ const disableAddMember = (setAddMember: (value: boolean) => void) => {
 
 export default function MembersTable() {
   const tableHead = ["Name", "Email", "Employed", " "];
-  const limit = 2;
+  const limit = 10;
 
   const [state, dispatch] = React.useReducer(reducer, {
     membersCount: 0,
@@ -121,7 +121,7 @@ export default function MembersTable() {
             members: res.data.results,
             prev: res.data.previous ? true : false,
             next: res.data.next ? true : false,
-            pages: Math.ceil(res.totalMembers / 2),
+            pages: Math.ceil(res.totalMembers / 10),
             currentPage: 1,
           },
         });

@@ -4,7 +4,7 @@ import { formatDate, greetingMessage } from "../../utils/dateUtils";
 import { viewAllTasksInOrg } from "../../utils/taskUtils";
 import Members from "./Members";
 import { getAllBoards } from "../../utils/boardUtils";
-import { getAllUsersPaginated } from "../../utils/userUtils";
+import { getAllUsersInOrg, getAllUsersPaginated } from "../../utils/userUtils";
 
 type analyticsData = {
   title: string;
@@ -64,11 +64,12 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-    getAllUsersPaginated(1, 2)
+    getAllUsersInOrg()
       .then((res) => {
+        console.log(res.data.length);
         setState((prevState) => ({
           ...prevState,
-          membersCount: res.totalMembers,
+          membersCount: res.data.length,
         }));
       })
       .catch((err) => {

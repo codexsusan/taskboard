@@ -1,20 +1,30 @@
 # TaskBoard - Kanban Board Style Task Management System
 
+Organization
 
-Organization Email: admin@taskboard.com
-Organization Password: 12345678
+```javascript
+ Email: admin@taskboard.com
+ Password: 12345678
+```
 
 User 1
+
+```javascript
 Email: chandler@gmail.com
 Password: 12345678
+```
 
 User 2:
+
+```javascript
 Email: johndoe@gmail.com
 Password: 12345678
+```
 
 TaskBoard is a simple and effective task management system that allows organizations to register and manage their employees efficiently. This platform enables users to create boards, assign tasks to employees, and visualize the progress of tasks in a Kanban board style flow. With TaskBoard, your organization can streamline its task management process and improve productivity.
 
 ## Table of Contents
+
 1. [Introduction](#introduction)
 2. [Features](#features)
 3. [Installation](#installation)
@@ -54,6 +64,7 @@ To get started with TaskBoard, follow these simple steps:
 ## Usage
 
 Once TaskBoard is up and running, you can perform the following actions:
+
 - **Register as Organization**: Register as an organization
 - **Create a New Board**: Add a new board to the system for different projects or departments.
 - **Add Employees**: Register employees within the organization and assign them to specific boards.
@@ -63,7 +74,6 @@ Once TaskBoard is up and running, you can perform the following actions:
 ## How it Works
 
 TaskBoard utilizes a server-side and client-side architecture to manage tasks efficiently. The backend is built using [Node.js](https://nodejs.org) and [Express.js](https://expressjs.com/), with [PostgreSQL](https://www.postgresql.org/) as the database to store task data. The [PostgreSQL](https://www.postgresql.org/) database is accessed and managed using an Object-Relational Mapping (ORM) library, such as [Sequelize](https://sequelize.org/), to facilitate data manipulation.
-
 
 The server handles API requests from the frontend, performing CRUD operations to manage organizations, boards, employees, stages and tasks. The frontend provides an interactive user interface that allows users to create boards, assign tasks, and visualize their progress in real-time.
 
