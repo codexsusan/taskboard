@@ -1,12 +1,11 @@
 import React, { Fragment } from "react";
-import { Task, allAssigned } from "../../utils/taskUtils";
 import DropdownModal from "../../common/DropdownModal";
-import { UpdateTaskModal } from "../task/TaskComp";
-import { Stage } from "./reducer";
-import AssignTaskModal from "./AssignTaskModal";
 import SideOvers from "../../common/SideOvers";
+import { Task, allAssigned } from "../../utils/taskUtils";
+import { UpdateTaskModal } from "../task/TaskComp";
 import TaskDetail from "../task/TaskDetail";
 import { MemberType } from "../task/reducer";
+import { Stage } from "./reducer";
 
 const openTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(true);
@@ -16,17 +15,6 @@ const closeTaskCB = (setTaskModal: (value: boolean) => void) => {
   setTaskModal(false);
 };
 
-const openAssignTaskModalCB = (
-  setAssignTaskModal: (value: boolean) => void
-) => {
-  setAssignTaskModal(true);
-};
-
-const closeAssignTaskModalCB = (
-  setAssignTaskModal: (value: boolean) => void
-) => {
-  setAssignTaskModal(false);
-};
 
 function TaskBox(props: {
   task: Task;
@@ -35,7 +23,6 @@ function TaskBox(props: {
   deleteTaskCB: (stageId: Stage["id"], taskId: Task["id"]) => void;
 }) {
   const [taskModal, setTaskModal] = React.useState(false);
-  const [assignTaskModal, setAssignTaskModal] = React.useState(false);
   const [sideOver, setSideOver] = React.useState(false);
   const [taskAssigned, setTaskAssigned] = React.useState<MemberType[]>([]);
   const setTaskAssignCB = (newUser: MemberType) => {
@@ -86,9 +73,6 @@ function TaskBox(props: {
             stageId={props.stageId}
             task={props.task}
             openTaskModalCB={() => openTaskCB(setTaskModal)}
-            openAssignTaskModalCB={() =>
-              openAssignTaskModalCB(setAssignTaskModal)
-            }
             deleteTaskCB={props.deleteTaskCB}
           />
         </div>
@@ -123,11 +107,6 @@ function TaskBox(props: {
         open={taskModal}
         closeCB={() => closeTaskCB(setTaskModal)}
         updateTaskCB={props.updateTaskCB}
-      />
-      <AssignTaskModal
-        task={props.task}
-        open={assignTaskModal}
-        closeCB={() => closeAssignTaskModalCB(setAssignTaskModal)}
       />
       <SideOvers open={sideOver} closeCB={closeSideOver}>
         <TaskDetail

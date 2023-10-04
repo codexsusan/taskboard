@@ -51,43 +51,50 @@ function AssignTaskModal(props: {
   }, [boardId, props.task.id]);
 
   return (
-    <div className="w-full">
+    <div onClick={(e) => e.stopPropagation()} className="w-full">
       <Modal open={props.open} closeCB={props.closeCB}>
         <div className="flex flex-col w-full gap-y-2">
-          <div className="flex justify-between">
-            <div className="text-xl font-semibold">Assign Task</div>
+          <div className="flex w-full justify-between items-center">
+            <div />
+            <div className="text-xl font-semibold text-center">Assign Task</div>
             <XMarkIcon
-              className="h-6 w-6 cursor-pointer"
+              className="h-6 w-6 cursor-pointer item"
               onClick={props.closeCB}
             />
           </div>
           <Divider />
-          <div>
+          <div className="">
             <div className="flex flex-col gap-y-2 mt-2">
-              {unAssignedMembers.map((member) => {
-                return (
-                  <div
-                    key={member.id}
-                    className="flex justify-between items-center bg-blue-gray-50 p-2 rounded"
-                  >
-                    <div className="flex gap-x-2 items-center">
-                      <div className="text-gray-900 font-semibold">
-                        {member.username}
+              <div className="mb-2 flex flex-col gap-4">
+                {unAssignedMembers.length !== 0 && (
+                  <div className="text-xl font-semibold">Members</div>
+                )}
+                {unAssignedMembers.map((member) => {
+                  return (
+                    <div
+                      key={member.id}
+                      className="flex justify-between items-center bg-blue-gray-50 p-2 rounded"
+                    >
+                      <div className="flex gap-x-2 items-center">
+                        <div className="text-gray-900 font-semibold">
+                          {member.username}
+                        </div>
+                        <div className="text-gray-500">{member.email}</div>
                       </div>
-                      <div className="text-gray-500">{member.email}</div>
+                      <div>
+                        <Button theme="white" title="Assign" />
+                      </div>
                     </div>
-                    <div>
-                      <Button
-                        theme="white"
-                        title="Assign"
-                        onClick={() => {
-                          // props.handleRemoveMember(member.id);
-                        }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              {assignedMembers.length + unAssignedMembers.length === 0 && (
+                <div className="text-center py-5">
+                  You have no member in this board!!!
+                </div>
+              )}
+
+              <div className="text-xl font-semibold">Assigned Members</div>
               {assignedMembers.map((member) => {
                 return (
                   <div
@@ -101,13 +108,7 @@ function AssignTaskModal(props: {
                       <div className="text-gray-500">{member.email}</div>
                     </div>
                     <div>
-                      <Button
-                        theme="blue"
-                        title="Remove"
-                        onClick={() => {
-                          // props.handleRemoveMember(member.id);
-                        }}
-                      />
+                      <Button theme="blue" title="Remove" />
                     </div>
                   </div>
                 );

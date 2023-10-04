@@ -53,12 +53,6 @@ export function StageCreateModal(props: {
           label="Title"
           type="text"
         />
-        {/* <InputField
-          onValueChange={updateDescriptionCB}
-          label="Description"
-          type="text"
-          value={stage.description}
-        /> */}
         <div className="flex items-center w-full justify-between">
           <Button theme="dark" title="Cancel" onClick={props.closeCB} />
           <div className="flex my-2">
