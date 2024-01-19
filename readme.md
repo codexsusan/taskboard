@@ -1,6 +1,10 @@
 # TaskBoard - Kanban Board Style Task Management System
 
-Organization
+TaskBoard is a simple and effective task management system that allows organizations to register and manage their employees efficiently. This platform enables users to create boards, assign tasks to employees, and visualize the progress of tasks in a Kanban board style flow. With TaskBoard, your organization can streamline its task management process and improve productivity.
+
+
+
+<!-- Organization
 
 ```javascript
  Email: admin@taskboard.com
@@ -19,9 +23,7 @@ User 2:
 ```javascript
 Email: johndoe@gmail.com
 Password: 12345678
-```
-
-TaskBoard is a simple and effective task management system that allows organizations to register and manage their employees efficiently. This platform enables users to create boards, assign tasks to employees, and visualize the progress of tasks in a Kanban board style flow. With TaskBoard, your organization can streamline its task management process and improve productivity.
+``` -->
 
 ## Table of Contents
 
@@ -47,7 +49,6 @@ TaskBoard is a web-based task management system built to simplify task organizat
 - Track task progress using the Kanban board view, with customizable status columns (e.g., "To Do," "In Progress," "Done").
 - Drag and drop tasks across columns to update their status effortlessly.
 - Mark tasks as completed and archive them for future reference.
-- Receive email notifications for task assignments and updates.
 - Responsive design, making it accessible from various devices.
 
 ## Installation
@@ -55,7 +56,7 @@ TaskBoard is a web-based task management system built to simplify task organizat
 To get started with TaskBoard, follow these simple steps:
 
 1. Clone the repository: `git clone https://github.com/codexsusan/taskboard`
-2. Change directory to TaskBoard: `cd TaskBoard`
+2. Change directory to TaskBoard: `cd taskboard`
 3. Install the required dependencies: `npm install`
 4. Set up the database and configure your environment variables.
 5. Start the server: `npm start`
@@ -63,7 +64,7 @@ To get started with TaskBoard, follow these simple steps:
 
 ## Usage
 
-Once TaskBoard is up and running, you can perform the following actions:
+TaskBoard is currently up and running, you can perform the following actions:
 
 - **Register as Organization**: Register as an organization
 - **Create a New Board**: Add a new board to the system for different projects or departments.
@@ -87,7 +88,7 @@ We welcome contributions from the community! To contribute to TaskBoard, follow 
 4. Push the changes to your forked repository: `git push origin feature/your-feature-name`
 5. Create a pull request to the main repository.
 
-Please ensure your pull request adheres to the project's coding guidelines and includes relevant tests for any new features or bug fixes.
+Please ensure your pull request adheres to the project's coding guidelines.
 
 ## Support
 

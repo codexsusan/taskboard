@@ -1,7 +1,6 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Task } from "../utils/taskUtils";
 
 export default function SideOvers(props: {
   children: React.ReactNode;

@@ -4,7 +4,7 @@ import { formatDate, greetingMessage } from "../../utils/dateUtils";
 import { viewAllTasksInOrg } from "../../utils/taskUtils";
 import Members from "./Members";
 import { getAllBoards } from "../../utils/boardUtils";
-import { getAllUsersInOrg, getAllUsersPaginated } from "../../utils/userUtils";
+import { getAllUsersInOrg } from "../../utils/userUtils";
 
 type analyticsData = {
   title: string;
@@ -16,17 +16,17 @@ export type UserTypes = {
   userType: string;
   iat: number;
 } & (
-  | {
+    | {
       user: {
         id: string;
       };
     }
-  | {
+    | {
       org: {
         id: string;
       };
     }
-);
+  );
 
 type State = {
   boardsCount: number;

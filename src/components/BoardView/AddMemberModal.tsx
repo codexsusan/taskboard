@@ -4,7 +4,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import Divider from "../../common/Divider";
 import Button from "../../common/Buttons";
 import { addMember, removeMember } from "../../utils/boardUtils";
-import { getAllUsersInBoard, getAllUsersInOrg } from "../../utils/userUtils";
+import { getAllUsersInBoard } from "../../utils/userUtils";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
