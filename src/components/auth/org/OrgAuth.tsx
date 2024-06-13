@@ -184,6 +184,7 @@ function OrgSignup(props: {
       setLoading(true);
       orgSignUp(org)
         .then((res) => {
+          console.log(res);
           setLoading(false);
           if (res.success) {
             navigate("/board");

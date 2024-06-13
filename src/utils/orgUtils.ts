@@ -11,7 +11,7 @@ export type Org = {
 // NOTE: Currently not in use
 // export const orgMe = async () => {
 //     const response = await request("/org/me", "GET");
-//     return response;
+//     return response;a
 // }
 
 // Organization signup
